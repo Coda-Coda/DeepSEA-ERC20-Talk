@@ -1,0 +1,15 @@
+A video introduction to Alectryon, from SLE 2020.
+
+Unlike pen-and-paper proofs, Coq proof scripts only describe the steps to take, not the states that these steps lead to; as a result, proof scripts are essentially incomprehensible without an interactive user interface to show proof goals.
+
+Until now, the standard process to share a self-contained Coq proof was to copy-paste goals into the proof script as comments. Additional prose was likewise embedded in comments.
+
+Alectryon is a new way to develop and disseminate literate proof scripts. It combines a compiler that interleaves Coq’s output with the original proof script to produce interactive webpages, and a literate programming toolkit that allows authors to translate back and forth between reST and Coq.
+
+These tools offer a new way to write, communicate, and preserve proofs, combining the flexibility of procedural proof scripts and the intelligibility of declarative proofs.
+
+----
+
+You can hear my name at https://pit-claudel.fr/clement/name.mp3 .  My first name is like the English word "clement" (https://www.merriam-webster.com/dictionary/clement).  My last name is "pit" as in "pitfall", and "claudel" as "claw - dell".  Any other pronunciation is also acceptable :)
+
+Oh, and I'm on the job market this year!  Looking for research positions with a focus on end-to-end verification of system software, hardware verification, and tooling for proof assistants.

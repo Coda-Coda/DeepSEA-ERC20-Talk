@@ -1,0 +1,1288 @@
+1
+00:00:05,029 --> 00:00:07,479
+Back in undergrad I taught in high school
+for a few months.
+
+2
+00:00:07,479 --> 00:00:11,410
+There was a proof I liked to show my students,
+because it surprised most of them.
+
+3
+00:00:11,410 --> 00:00:14,860
+This was the setup: every student knows that
+you can't sum fractions element-wise.
+
+4
+00:00:14,860 --> 00:00:18,100
+What many students don't know is that you
+*can*, actually, as long as long you're just
+
+5
+00:00:18,100 --> 00:00:19,619
+trying to prove an inequality.
+
+6
+00:00:19,619 --> 00:00:25,919
+My main line of research is doing proofs with
+Coq, so let me share a Coq proof of this inequality.
+
+7
+00:00:25,919 --> 00:00:26,919
+That's it.
+
+8
+00:00:26,919 --> 00:00:29,340
+You can check that the statement at the top
+matches what I wanted to prove, and there's
+
+9
+00:00:29,340 --> 00:00:33,309
+a Qed at the end, and I promise that Coq actually
+accepts this, so… all good?
+
+10
+00:00:33,309 --> 00:00:37,370
+Hey, I can even add a little rooster next
+to the proof to make it more convincing!
+
+11
+00:00:37,370 --> 00:00:40,749
+If this were a live talk I'd pause and ask
+people to raise their hands if they feel they
+
+12
+00:00:40,749 --> 00:00:42,379
+understand this proof.
+
+13
+00:00:42,379 --> 00:00:45,629
+But since I'm alone at home talking to my
+camera instead, I'll just assume that you're
+
+14
+00:00:45,629 --> 00:00:48,890
+like me, and that you don't find this pile
+of tactics particularly enlightening.
+
+15
+00:00:48,890 --> 00:00:51,780
+What are you supposed to do?
+
+16
+00:00:51,780 --> 00:00:55,480
+Simulate Coq's tactic engine in your mind
+to understand what's going on?
+
+17
+00:00:55,480 --> 00:00:58,850
+What we're looking at together is not what
+mathematicians typically call “a proof”,
+
+18
+00:00:58,850 --> 00:01:02,070
+because it's missing the proof states, which
+Coq calls “goals”.
+
+19
+00:01:02,070 --> 00:01:07,250
+What we're looking at is a proof *script*:
+a Coq program that records the steps that
+
+20
+00:01:07,250 --> 00:01:09,120
+establish that a theorem holds.
+
+21
+00:01:09,120 --> 00:01:13,280
+It's made of a sequence of tactics, each of
+which correspond to a small amount of progress
+
+22
+00:01:13,280 --> 00:01:17,500
+in the proof, like multiplying both sides
+of an inequality by a positive number or reasoning
+
+23
+00:01:17,500 --> 00:01:19,930
+by induction.
+
+24
+00:01:19,930 --> 00:01:24,130
+What it does not record are the “goals”,
+the intermediate proof states that these steps
+
+25
+00:01:24,130 --> 00:01:25,180
+lead to.
+
+26
+00:01:25,180 --> 00:01:28,700
+That's because, if you run the proof script
+in a Coq development environment, goals are
+
+27
+00:01:28,700 --> 00:01:31,030
+automatically computed and displayed by Coq
+itself.
+
+28
+00:01:31,030 --> 00:01:35,600
+The downside is that this makes it nigh impossible
+to understand a proof script on its own, without
+
+29
+00:01:35,600 --> 00:01:37,400
+running it.
+
+30
+00:01:37,400 --> 00:01:41,160
+In many cases we don't really care why a theorem
+is true, so it does not matter that the proof
+
+31
+00:01:41,160 --> 00:01:42,390
+script is inscrutable.
+
+32
+00:01:42,390 --> 00:01:46,180
+Maybe I'm proving that a particular program
+does not perform out-of-bounds array accesses,
+
+33
+00:01:46,180 --> 00:01:49,000
+for example, and it's enough for me to know
+that the theorem holds.
+
+34
+00:01:49,000 --> 00:01:52,630
+In those cases, if Coq is happy, I'm happy
+too.
+
+35
+00:01:52,630 --> 00:01:55,049
+But sometimes proofs do carry interesting
+insight.
+
+36
+00:01:55,049 --> 00:01:58,561
+Maybe there's a particularly tricky case that
+I'd like readers to think about, or maybe
+
+37
+00:01:58,561 --> 00:02:03,399
+I'm using Coq proofs to communicate interesting
+mathematical ideas, or maybe I'm teaching
+
+38
+00:02:03,399 --> 00:02:07,740
+students about simple math and logic concepts
+and using the computer to support my explanations
+
+39
+00:02:07,740 --> 00:02:11,870
+and introduce formal reasoning.
+
+40
+00:02:11,870 --> 00:02:16,459
+In those cases I want to show the reader what
+steps we took, and what states they led to.
+
+41
+00:02:16,459 --> 00:02:21,350
+That's easy to do in Coq if the readers have
+access to Coq: they can just feed the proof
+
+42
+00:02:21,350 --> 00:02:25,790
+script to Coq in an interactive IDE and inspect
+the intermediate states that Coq computes
+
+43
+00:02:25,790 --> 00:02:26,790
+and displays.
+
+44
+00:02:26,790 --> 00:02:29,409
+But maybe your readers don't have the right
+version of Coq installed.
+
+45
+00:02:29,409 --> 00:02:32,900
+Or maybe your proof has large dependencies
+that take a while to compile and your readers
+
+46
+00:02:32,900 --> 00:02:34,340
+are just browsing casually.
+
+47
+00:02:34,340 --> 00:02:35,940
+Maybe they're on a mobile phone.
+
+48
+00:02:35,940 --> 00:02:41,370
+Maybe you're writing a book and, well, your
+readers can't run Coq on a physical book.
+
+49
+00:02:41,370 --> 00:02:45,860
+So what do people do to write manuals, tutorials,
+textbooks, blog posts, or any other piece
+
+50
+00:02:45,860 --> 00:02:50,629
+of text that mixes Coq proofs and prose?
+
+51
+00:02:50,629 --> 00:02:54,849
+In most cases they do something like this:
+they run the proof in Coq and then, by hand,
+
+52
+00:02:54,849 --> 00:02:58,990
+they copy the output of each tactic into source
+code comments.
+
+53
+00:02:58,990 --> 00:03:04,159
+Here's what it looks like in Certified Programming
+with Dependent Types.
+
+54
+00:03:04,159 --> 00:03:07,629
+Here's what it looks like in Illya's Programs
+and Proofs.
+
+55
+00:03:07,629 --> 00:03:09,620
+Here's what it looks like in Software Foundations.
+
+56
+00:03:09,620 --> 00:03:12,510
+This is a particularly cumbersome process.
+
+57
+00:03:12,510 --> 00:03:16,349
+It takes a lot of work; it's easy to make
+mistakes; and it's very easy to forget to
+
+58
+00:03:16,349 --> 00:03:19,120
+update the comments after changing a proof
+script.
+
+59
+00:03:19,120 --> 00:03:22,950
+There's also no way to check whether the comments
+are still valid, so you have to rely on readers
+
+60
+00:03:22,950 --> 00:03:25,110
+to point issues as they discover them.
+
+61
+00:03:25,110 --> 00:03:30,519
+There's got to be a better way, and that's
+where Alectryon comes in.
+
+62
+00:03:30,519 --> 00:03:35,470
+Alectryon is two things: first, it's a compiler
+that records Coq's output and embeds it within
+
+63
+00:03:35,470 --> 00:03:40,209
+the proof script to create interactive proof
+visualizations, and second it's a literate
+
+64
+00:03:40,209 --> 00:03:42,860
+programming system for Coq.
+
+65
+00:03:42,860 --> 00:03:45,769
+Here's that same proof as rendered by Alectryon.
+
+66
+00:03:45,769 --> 00:03:51,769
+Alectryon's compiler took the input Coq file,
+fed it to Coq, collected the output, formatted
+
+67
+00:03:51,769 --> 00:03:54,700
+it, and generated a webpage interleaving inputs
+and outputs.
+
+68
+00:03:54,700 --> 00:03:59,390
+So what you're looking at is an interactive
+webpage: each input fragment of the original
+
+69
+00:03:59,390 --> 00:04:03,430
+Coq script is a button that you can hover
+on or click to show or hide the corresponding
+
+70
+00:04:03,430 --> 00:04:06,019
+proof state, along with any accompanying messages.
+
+71
+00:04:06,019 --> 00:04:10,439
+Every time I make changes to the Coq file
+I can re-run Alectryon, and it will update
+
+72
+00:04:10,439 --> 00:04:11,439
+the visualization.
+
+73
+00:04:11,439 --> 00:04:15,140
+And because all outputs are recorded, browsing
+through the proof is instantaneous: there's
+
+74
+00:04:15,140 --> 00:04:17,630
+no need to load a copy of Coq in your browser.
+
+75
+00:04:17,630 --> 00:04:21,739
+All of the layout and display is done in CSS,
+so you can actually change the rendering in
+
+76
+00:04:21,739 --> 00:04:22,870
+all sorts of fancy ways.
+
+77
+00:04:22,870 --> 00:04:23,870
+For example, here's a version that shows the
+output on the side.
+
+78
+00:04:23,870 --> 00:04:26,060
+Here's another version that mimics the usual
+interface that you see in a proof assistant,
+
+79
+00:04:26,060 --> 00:04:30,270
+with the code on the left and the goals and
+messages on the right.
+
+80
+00:04:30,270 --> 00:04:35,930
+Also, since we're now in a web browser, we
+can make everything look extra-fancy thanks
+
+81
+00:04:35,930 --> 00:04:40,120
+to the magic of Coq notations combined with
+JavaScript rendering of LaTeX code, and now
+
+82
+00:04:40,120 --> 00:04:43,680
+I have a much more reasonable shot at getting
+you to understand the proof:
+
+83
+00:04:43,680 --> 00:04:47,889
+First we sum the two fractions on the right;
+then we expand the numerator; then we multiply
+
+84
+00:04:47,889 --> 00:04:51,710
+both sides to get rid of the denominators;
+then we simplify and cancel on both sides,
+
+85
+00:04:51,710 --> 00:04:54,930
+and lastly we use the fact that a square is
+always positive.
+
+86
+00:04:54,930 --> 00:04:58,639
+That's really what it is: you take a Coq document,
+you put little annotations to indicate which
+
+87
+00:04:58,639 --> 00:05:02,110
+parts of the output should be displayed by
+default, and then Alectryon does the magic
+
+88
+00:05:02,110 --> 00:05:05,199
+of running Coq and embedding its answers into
+your document.
+
+89
+00:05:05,199 --> 00:05:09,819
+And here's an example of hiding parts of the
+input to show something slightly different:
+
+90
+00:05:09,819 --> 00:05:13,530
+part of teaching students about Coq involves
+explaining the Curry–Howard correspondence
+
+91
+00:05:13,530 --> 00:05:17,090
+by showing how tactics construct proof terms
+under the hood.
+
+92
+00:05:17,090 --> 00:05:21,940
+In this example, I've added calls to the Coq
+command “Show Proof” between each line,
+
+93
+00:05:21,940 --> 00:05:26,960
+and Alectryon shows the piecemeal construction
+of a proof term.
+
+94
+00:05:26,960 --> 00:05:27,960
+----
+
+95
+00:05:27,960 --> 00:05:31,020
+Ok, so this solves the problem of displaying
+goals and outputs to readers, but that's just
+
+96
+00:05:31,020 --> 00:05:34,410
+one part of writing a document that includes
+Coq proofs: the other part is writing the
+
+97
+00:05:34,410 --> 00:05:37,360
+explanatory prose that accompanies the proofs.
+
+98
+00:05:37,360 --> 00:05:41,600
+In fact, if you inspect this example from
+CPDT closely, you'll notice that there's no
+
+99
+00:05:41,600 --> 00:05:45,880
+actual code here — it's all prose in comments!
+
+100
+00:05:45,880 --> 00:05:49,440
+There's lots and lots of prose around the
+code: in fact, there's a whole book in there,
+
+101
+00:05:49,440 --> 00:05:51,530
+written within source code comments.
+
+102
+00:05:51,530 --> 00:05:55,190
+I have a lot of respect for the authors of
+all these Coq books.
+
+103
+00:05:55,190 --> 00:05:58,580
+It takes a whole different level of grit and
+determination to edit a whole book out of
+
+104
+00:05:58,580 --> 00:06:02,810
+source code comments, and the books that I
+mentioned are some of the best Coq books out
+
+105
+00:06:02,810 --> 00:06:03,810
+there.
+
+106
+00:06:03,810 --> 00:06:06,069
+Again, it shouldn't have to be this way.
+
+107
+00:06:06,069 --> 00:06:10,490
+My text editor has all sorts of nifty features
+for editing Markdown or reStructuredText documents,
+
+108
+00:06:10,490 --> 00:06:15,410
+like smart navigation, spell-checking, live
+previews, and convenient shortcuts, so it's
+
+109
+00:06:15,410 --> 00:06:20,699
+particularly frustrating when I end up having
+to write all my code inside Coq comments.
+
+110
+00:06:20,699 --> 00:06:24,139
+Alectryon has an answer for that as well:
+it includes a suite of literate programming
+
+111
+00:06:24,139 --> 00:06:28,680
+tools for Coq that make it much easier to
+create and edit documents that mix prose and
+
+112
+00:06:28,680 --> 00:06:29,680
+proofs.
+
+113
+00:06:29,680 --> 00:06:33,360
+The code you're looking at on this screen
+is a snippet from a blog post I wrote recently.
+
+114
+00:06:33,360 --> 00:06:37,660
+When you give Alectryon a Coq file, it can
+compile it to a webpage, but it can also generate
+
+115
+00:06:37,660 --> 00:06:42,099
+a reStructuredText file by partitioning the
+Coq sources into a sequence of code and comment
+
+116
+00:06:42,099 --> 00:06:46,259
+blocks, extracting the comments, and wrapping
+each code fragment into a reStructuredText
+
+117
+00:06:46,259 --> 00:06:48,970
+code block.
+
+118
+00:06:48,970 --> 00:06:51,930
+This is what it looks like after flipping
+the code and the prose around.
+
+119
+00:06:51,930 --> 00:06:53,000
+The syntax is reStructuredText.
+
+120
+00:06:53,000 --> 00:06:57,300
+reStructuredText is a great markup language,
+very much like Markdown but with a robust
+
+121
+00:06:57,300 --> 00:07:02,710
+story for writing extensions; in fact, I used
+this whole presentation is just one large
+
+122
+00:07:02,710 --> 00:07:07,160
+Coq file; I used Alectryon to convert it to
+reStructuredText.
+
+123
+00:07:07,160 --> 00:07:14,830
+The best part is that you can go back: once
+you're done editing the prose of your document
+
+124
+00:07:14,830 --> 00:07:17,800
+and you're ready to resume hacking on the
+proofs, you can use Alectryon to convert the
+
+125
+00:07:17,800 --> 00:07:21,980
+reStructuredText file back into a Coq source
+file, in which the prose is wrapped in special
+
+126
+00:07:21,980 --> 00:07:23,860
+comments and the code is at the top level.
+
+127
+00:07:23,860 --> 00:07:26,840
+Here, let's go back to the original code.
+
+128
+00:07:26,840 --> 00:07:29,669
+These two transformations are the inverse
+of one another, so you can switch between
+
+129
+00:07:29,669 --> 00:07:32,979
+the code-oriented view and the prose-oriented
+view at will.
+
+130
+00:07:32,979 --> 00:07:36,222
+This is trivial to integrate into an IDE;
+I did it for Emacs, and I'm sure it would
+
+131
+00:07:36,222 --> 00:07:38,720
+be very easy to do in any other editor.
+
+132
+00:07:38,720 --> 00:07:42,810
+Being able to go back and forth between reStructuredText
+and Coq means that Alectryon does not have
+
+133
+00:07:42,810 --> 00:07:47,840
+to implement its own markup language for literate
+comments: it can just piggyback on the existing
+
+134
+00:07:47,840 --> 00:07:51,250
+reStructuredText toolchain, which is very
+robust and used by a lot of people for all
+
+135
+00:07:51,250 --> 00:07:54,400
+sorts of documents, like the reference manuals
+of Python, Agda, Haskell, and a host of other
+
+136
+00:07:54,400 --> 00:07:55,400
+languages — including Coq.
+
+137
+00:07:55,400 --> 00:07:58,180
+If you're familiar with literate programming,
+you might notice that this is a bit different
+
+138
+00:07:58,180 --> 00:07:59,190
+from the usual process.
+
+139
+00:07:59,190 --> 00:08:03,360
+Normally, in systems like WEB or org-mode,
+you start with a main document, which you
+
+140
+00:08:03,360 --> 00:08:07,569
+can either “tangle” to get executable
+source code, or “weave” to get a document
+
+141
+00:08:07,569 --> 00:08:09,780
+suitable for typesetting or reading, like
+LaTeX or HTML.
+
+142
+00:08:09,780 --> 00:08:15,080
+But in most cases, it's not particularly easy
+to edit the generated code and mirror these
+
+143
+00:08:15,080 --> 00:08:17,639
+edits back into the original sources.
+
+144
+00:08:17,639 --> 00:08:22,040
+It does not matter too much for regular programming
+languages, although it does make it trickier
+
+145
+00:08:22,040 --> 00:08:24,539
+to use tools like linters or debuggers.
+
+146
+00:08:24,539 --> 00:08:28,750
+But for a Coq proof, you really want to be
+able to step through the proofs interactively
+
+147
+00:08:28,750 --> 00:08:32,680
+while you're writing them, and that's why
+most proof-heavy Coq literature is written
+
+148
+00:08:32,680 --> 00:08:37,130
+in Coqdoc, with the prose embedded inside
+comments.
+
+149
+00:08:37,130 --> 00:08:42,380
+So that's what Alectryon does: it gives you
+bidirectional editing, which allows you to
+
+150
+00:08:42,380 --> 00:08:45,860
+toggle between code and prose seamlessly,
+so you're free to use the most appropriate
+
+151
+00:08:45,860 --> 00:08:48,280
+editing environment at all times.
+
+152
+00:08:48,280 --> 00:08:53,300
+Importantly, there's no preferred view of
+a document: you can pick either the reStructuredText
+
+153
+00:08:53,300 --> 00:08:56,450
+view or the Coq view as the one you store
+and distribute.
+
+154
+00:08:56,450 --> 00:09:00,140
+For a literate Coq library you would probably
+distribute the code-oriented view so that
+
+155
+00:09:00,140 --> 00:09:03,690
+users can compile your files as regular Coq
+sources without having to know anything about
+
+156
+00:09:03,690 --> 00:09:09,990
+Alectryon, and for a book with a few Coq examples
+you might distribute reStructuredText files
+
+157
+00:09:09,990 --> 00:09:10,990
+instead.
+
+158
+00:09:10,990 --> 00:09:11,990
+----
+
+159
+00:09:11,990 --> 00:09:16,440
+Now that I've given you a sense of what Alectryon
+does, let me say a bit about how it does it.
+
+160
+00:09:16,440 --> 00:09:20,890
+Alectryon is a Python program, and it's written
+as a collection of mostly independent modules:
+
+161
+00:09:20,890 --> 00:09:25,110
+- A “core” module handles communication
+with Coq through the SerAPI protocol.
+
+162
+00:09:25,110 --> 00:09:29,810
+An interesting technical challenge is sentence
+segmentation: Coq's notation system makes
+
+163
+00:09:29,810 --> 00:09:35,540
+it almost impossible to determine where a
+Coq sentence starts or ends, so we use Coq's
+
+164
+00:09:35,540 --> 00:09:38,160
+APIs directly for this.
+
+165
+00:09:38,160 --> 00:09:43,220
+- A “transforms” module improves the rendering
+of the results and processes display annotations
+
+166
+00:09:43,220 --> 00:09:47,610
+that specify which parts of the output to
+show or hide by default.
+
+167
+00:09:47,610 --> 00:09:51,340
+This module can accommodate user-specified
+transforms, which make it possible to special-case
+
+168
+00:09:51,340 --> 00:09:55,250
+the rendering of certain types or constructs
+and generally customize the output (as an
+
+169
+00:09:55,250 --> 00:09:58,100
+alternative, you can also customize the output
+by running JavaScript directly in the browser).
+
+170
+00:09:58,100 --> 00:10:03,420
+Here are two concrete examples: in this first
+one, I'm trying to get a better sense of the
+
+171
+00:10:03,420 --> 00:10:08,030
+internal workings of Coq's red-black trees,
+so I'm progressively adding elements and seeing
+
+172
+00:10:08,030 --> 00:10:10,260
+how the resulting trees look.
+
+173
+00:10:10,260 --> 00:10:15,270
+The default output isn't very convincing.
+
+174
+00:10:15,270 --> 00:10:19,270
+Now here's the same thing, but rendered using
+a graph library to display the trees, which
+
+175
+00:10:19,270 --> 00:10:23,110
+makes it clear how the structure of the trees
+is affected by the order in which elements
+
+176
+00:10:23,110 --> 00:10:25,210
+are added.
+
+177
+00:10:25,210 --> 00:10:29,140
+In this second example, I have a hypothetical
+compiler that takes C code and produces a
+
+178
+00:10:29,140 --> 00:10:30,140
+binary.
+
+179
+00:10:30,140 --> 00:10:34,790
+What I've done here is ask Alectryon to take
+the bytes printed by Coq; call `objdump` on
+
+180
+00:10:34,790 --> 00:10:39,230
+them to get an assembly code listing; highlight
+*that* using Pygments; and then inline the
+
+181
+00:10:39,230 --> 00:10:43,630
+result into the output.
+
+182
+00:10:43,630 --> 00:10:47,840
+- An HTML module translates a recorded Coq
+session to HTML; this is mostly straightforward,
+
+183
+00:10:47,840 --> 00:10:51,540
+though we're doubly careful to produce good
+code to make sure that the result works without
+
+184
+00:10:51,540 --> 00:10:56,600
+JavaScript and looks decent even without CSS;
+that's because if you write a blog, for example,
+
+185
+00:10:56,600 --> 00:11:03,110
+many people will read it through an RSS feed
+and these mostly don't support CSS.
+
+186
+00:11:03,110 --> 00:11:07,240
+- A “literate” module is in charge of
+tangling and untangling, from Coq to reStructuredText
+
+187
+00:11:07,240 --> 00:11:08,550
+and back.
+
+188
+00:11:08,550 --> 00:11:12,070
+Starting from Coq it's just a matter of identifying
+comments, which we do using a recursive descent
+
+189
+00:11:12,070 --> 00:11:16,250
+parser (it's harder than it looks, because
+the rules governing Coq comments and strings
+
+190
+00:11:16,250 --> 00:11:19,990
+are pretty tricky to get right; so tricky
+that it trips up the syntax highlighter that
+
+191
+00:11:19,990 --> 00:11:23,210
+I'm using for this presentation).
+
+192
+00:11:23,210 --> 00:11:27,580
+Starting from reST we use the standard reST
+parser to delimit sections of code and comments,
+
+193
+00:11:27,580 --> 00:11:30,650
+and we jump through a few hoops to make indentation
+work out.
+
+194
+00:11:30,650 --> 00:11:34,190
+In both directions we keep track of source
+code positions; this makes the process quite
+
+195
+00:11:34,190 --> 00:11:37,760
+a bit trickier, but it allows us to keep the
+position that the user is looking at when
+
+196
+00:11:37,760 --> 00:11:41,140
+they switch from one view to the other; this
+is pretty crucial to ensure a nice experience
+
+197
+00:11:41,140 --> 00:11:43,250
+when toggling between the code and prose views.
+
+198
+00:11:43,250 --> 00:11:47,670
+As a bonus, it allows us to run the reStructuredText
+syntax checker in the background when the
+
+199
+00:11:47,670 --> 00:11:51,790
+user is in the Coq view and translate error
+positions to display them at the right place
+
+200
+00:11:51,790 --> 00:11:52,790
+in the Coq view.
+
+201
+00:11:52,790 --> 00:11:58,020
+- A “docutils” and a “sphinx” modules
+plug Alectryon into popular reStructuredText
+
+202
+00:11:58,020 --> 00:12:02,450
+compilation toolchains to allow users to include
+bits of Coq code into larger documents and
+
+203
+00:12:02,450 --> 00:12:06,020
+compile them with their favorite tools.
+
+204
+00:12:06,020 --> 00:12:07,020
+----
+
+205
+00:12:07,020 --> 00:12:09,620
+The paper has a lot of evaluation, and I encourage
+you to check it out if you're curious; in
+
+206
+00:12:09,620 --> 00:12:12,500
+brief, the evaluation is organized around
+two axes:
+
+207
+00:12:12,500 --> 00:12:16,820
+- The first experiment is intended to evaluate
+Alectryon's robustness: we've compiled plenty
+
+208
+00:12:16,820 --> 00:12:21,330
+of documents and Coq libraries, totally tens
+of thousands of lines of code and thousands
+
+209
+00:12:21,330 --> 00:12:24,190
+of printed pages, and the approach seems pretty
+robust.
+
+210
+00:12:24,190 --> 00:12:28,930
+We can compile all of Coq's standard library,
+various blog posts, chapters excerpted from
+
+211
+00:12:28,930 --> 00:12:33,390
+various books, and even a complete volume
+from Software Foundations.
+
+212
+00:12:33,390 --> 00:12:36,710
+If you're familiar with some of the books
+I mentioned then you may be wondering how
+
+213
+00:12:36,710 --> 00:12:40,680
+this actually works, because most of them
+are written in Coqdoc, not in reStructuredText,
+
+214
+00:12:40,680 --> 00:12:45,350
+and I've said before that Alectryon processes
+reStructuredText documents.
+
+215
+00:12:45,350 --> 00:12:48,210
+That's actually a neat example of Alectryon's
+extensibility.
+
+216
+00:12:48,210 --> 00:12:52,790
+What we do for Coqdoc documents, instead of
+asking their authors to port them to reStructuredText,
+
+217
+00:12:52,790 --> 00:12:57,180
+is to render the code and Coq's output with
+Alectryon, but we run Coqdoc for the prose
+
+218
+00:12:57,180 --> 00:13:02,770
+part and we incorporate the HTML that it generates
+into the webpages that we produce.
+
+219
+00:13:02,770 --> 00:13:06,250
+- The second experiment measures Alectryon's
+speed.
+
+220
+00:13:06,250 --> 00:13:09,840
+All the graphs are in the paper, but the long
+story short is that Alectryon has a median
+
+221
+00:13:09,840 --> 00:13:17,200
+overhead of 3x on compilation times (90% of
+all files fall below 7x), and a good 1/3 of
+
+222
+00:13:17,200 --> 00:13:20,702
+that is communication overhead that can probably
+be eliminated in the future.
+
+223
+00:13:20,702 --> 00:13:24,380
+The rest is the overhead of collecting and
+formatting goals, which can be pretty costly
+
+224
+00:13:24,380 --> 00:13:28,250
+for files that have a many goals.
+
+225
+00:13:28,250 --> 00:13:29,250
+----
+
+226
+00:13:29,250 --> 00:13:31,380
+It's hard to do justice to all the related
+work in this area in just a few minutes, so
+
+227
+00:13:31,380 --> 00:13:35,130
+I'll simply say that Alectryon builds on decades
+of great ideas for making programs and proofs
+
+228
+00:13:35,130 --> 00:13:39,210
+more understandable, all the way from a paper
+in 1980 co-authored by Eric Schmidt and Phil
+
+229
+00:13:39,210 --> 00:13:42,240
+Wadler to PhD theses written just a year ago.
+
+230
+00:13:42,240 --> 00:13:45,940
+There's 60 citations and three pages of related
+work in the paper; if you're curious about
+
+231
+00:13:45,940 --> 00:13:49,360
+the history of this stuff, you should really
+have a look.
+
+232
+00:13:49,360 --> 00:13:50,360
+----
+
+233
+00:13:50,360 --> 00:13:53,890
+To recap, Alectryon provides an architecture
+to record and visualize Coq proofs, facilitating
+
+234
+00:13:53,890 --> 00:13:58,430
+sharing and interactive exploration of proof
+scripts; and a bidirectional translator between
+
+235
+00:13:58,430 --> 00:14:03,110
+woven and tangled documents, enabling seamless
+editing of prose and code.
+
+236
+00:14:03,110 --> 00:14:06,540
+Alectryon is freely available on GitHub, and
+it's already used in the wild.
+
+237
+00:14:06,540 --> 00:14:10,250
+We use it for our group blog, I know someone
+is trying to use it for their Coq documentation
+
+238
+00:14:10,250 --> 00:14:13,550
+at their company, and there's even 3rd-party
+packages starting to pop up to integrate it
+
+239
+00:14:13,550 --> 00:14:15,260
+with other blogging platforms.
+
+240
+00:14:15,260 --> 00:14:19,250
+I'm sure some day a kind soul will help me
+figure out how to put it on OPAM, too.
+
+241
+00:14:19,250 --> 00:14:21,000
+Or maybe on the Python package index.
+
+242
+00:14:21,000 --> 00:14:24,380
+Maybe I can conclude with a few words about
+the next steps.
+
+243
+00:14:24,380 --> 00:14:27,110
+Here are some directions that I'm exploring
+or would like help exploring.
+
+244
+00:14:27,110 --> 00:14:32,090
+First, I'd like to make a LaTeX backend: reStructuredText
+can produce LaTeX in addition to HTML, so
+
+245
+00:14:32,090 --> 00:14:33,710
+it would make sense to support that as well.
+
+246
+00:14:33,710 --> 00:14:36,720
+I have a branch for this, and it's almost
+ready.
+
+247
+00:14:36,720 --> 00:14:40,260
+Second, I'd like to explore advanced visualizations
+further.
+
+248
+00:14:40,260 --> 00:14:44,820
+There are many domains for which the natural
+visualization for a piece of data is not text.
+
+249
+00:14:44,820 --> 00:14:48,470
+I have a few examples in the paper, but I'd
+like to push that idea further.
+
+250
+00:14:48,470 --> 00:14:52,700
+In fact, what would be really neat would be
+to settle on a standard for Coq developments
+
+251
+00:14:52,700 --> 00:14:54,470
+to specify how to render a particular type.
+
+252
+00:14:54,470 --> 00:15:00,870
+I'm thinking of display-only notations that
+would produce images, graphs, plots, etc.
+
+253
+00:15:00,870 --> 00:15:05,470
+Once we have this, we could even integrate
+it with IDEs and finally stop envying the
+
+254
+00:15:05,470 --> 00:15:08,280
+Racket folks with their magic picture tricks.
+
+255
+00:15:08,280 --> 00:15:12,860
+Third, for all the machine learning wizards
+out there, I'd like to explore automatic proof
+
+256
+00:15:12,860 --> 00:15:16,960
+summarization — just like automatically
+identifying the most exciting moments of a
+
+257
+00:15:16,960 --> 00:15:18,870
+soccer game, but for Coq proofs.
+
+258
+00:15:18,870 --> 00:15:22,390
+More formally, the task is to automatically
+identify a small subset of proof steps that
+
+259
+00:15:22,390 --> 00:15:26,670
+lead to particularly interesting or relevant
+goals; we'd use this in combination with Alectryon
+
+260
+00:15:26,670 --> 00:15:30,870
+to identify the most interesting parts of
+a proof development.
+
+261
+00:15:30,870 --> 00:15:34,540
+Finally, I'd like to extend the system to
+other languages, both for the markup side
+
+262
+00:15:34,540 --> 00:15:35,580
+and for the Coq side.
+
+263
+00:15:35,580 --> 00:15:41,510
+I built Alectryon with Coq and reStructuredText,
+but very little of it is actually Coq or reStructuredText
+
+264
+00:15:41,510 --> 00:15:42,510
+specific.
+
+265
+00:15:42,510 --> 00:15:45,820
+To port Alectryon to a different language,
+like Lean for example, you would need to add
+
+266
+00:15:45,820 --> 00:15:50,320
+a Python module that invokes Lean and collects
+its output, and if you also wanted the literate
+
+267
+00:15:50,320 --> 00:15:55,050
+programming support you'd want to make a bidirectional
+translator for Lean's comment syntax.
+
+268
+00:15:55,050 --> 00:15:58,360
+The literate programming parts were actually
+inspired by work that I did for F* a few years
+
+269
+00:15:58,360 --> 00:16:00,690
+ago, so adding new languages really shouldn't
+be too hard.
+
+270
+00:16:00,690 --> 00:16:06,660
+If you're interested in getting Alectryon
+to work with your favorite proof assistant,
+
+271
+00:16:06,660 --> 00:16:12,500
+please get in touch.
+

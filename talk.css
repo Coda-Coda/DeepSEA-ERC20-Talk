@@ -1,0 +1,234 @@
+mjx-container,
+.MJXc-display,
+.MJXp-display,
+.MathJax_Display,
+.MathJax_Preview,
+.MathJax_SVG_Display,
+.MathJax_SVG_Preview,
+.MathJax_PHTML_Display,
+.MathJax_PHTML_Preview,
+.MathJax_MathML {
+    margin: 0 !important;
+}
+
+html {
+  font-family: 'Fira Sans';
+  font-size: 40pt;
+}
+
+/* Coq fonts */
+pre, code, samp, tt, .literal, a,
+.magic-rooster {
+    font-family: "Fira Code", monospace;
+    font-feature-settings: "calt" on;
+    font-size: 0.75em;
+}
+
+.step {
+  width: max-content;
+  max-width: 1860px;
+  max-height: 1080px;
+  overflow: hidden;
+}
+
+.alectryon-io {
+  width: 1800px;
+  margin: auto;
+  font-size: 25pt;
+}
+
+.coq-mathjax .alectryon-io, .alectryon-block .alectryon-io {
+  font-size: 15pt;
+}
+
+.rbt-render .alectryon-io {
+  width: 1400px;
+}
+
+a {
+  color: black;
+}
+
+h1 {
+  text-align: center;
+  font-size: 3rem;
+  margin: 0.5rem;
+}
+
+.titlepage {
+  display: none;
+}
+
+.titlepage + h1 {
+  font-size: 2rem;
+}
+
+h2, h3 {
+  font-weight: normal;
+  margin: auto;
+  text-align: center;
+}
+
+.xxxxl {
+  font-size: 2.5rem;
+}
+
+.xxxl {
+  font-size: 1.5rem;
+}
+
+.xxl {
+  font-size: xx-large;
+}
+
+.xl {
+  font-size: x-large;
+}
+
+.l {
+  font-size: large;
+}
+
+.s {
+  font-size: small;
+}
+
+img {
+  margin: auto;
+  display: block;
+  max-width: 1800px;
+  max-height: 950px;
+}
+
+.twocolumns {
+  width: 100%;
+  display: grid;
+  grid-auto-flow: column;
+}
+
+img {
+  width: 1800px;
+}
+
+.img-m {
+  width: 1200px;
+}
+
+.img-s {
+  width: auto;
+  height: 600px;
+}
+
+.img-stdlib {
+  width: 400px;
+  height: auto;
+}
+
+.img-breakdowns {
+  width: auto;
+  height: 600px;
+}
+
+.img-stdlib, .img-breakdowns {
+  width: auto;
+  height: 500px;
+}
+
+
+/* Disable transitions */
+* {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
+}
+
+/* TODO */
+.proof-overlay {
+  position: relative;
+}
+
+.rooster-sticker {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 4rem;
+  border: thin solid black;
+  border-radius: 100%;
+  background: #0008;
+  padding: 0.5rem;
+  z-index: 1;
+  width: auto;
+}
+
+.magic-rooster {
+  position: absolute;
+  top: 3.5em;
+  height: 8em;
+  width: auto;
+  padding: 1.7em 1800px 1.7em 1em;
+  backdrop-filter: blur(5px);
+}
+
+.red {
+  color: red;
+}
+
+.green {
+  color: green;
+}
+
+.alectryon-standalone, .alectryon-windowed {
+  width: 1800px;
+  height: 900px;
+}
+
+.alectryon-standalone {
+  position: relative;
+}
+
+/* rbt */
+
+.rbt-no-printing .coq-message {
+  font-size: x-small !important;
+  max-height: 10rem;
+  overflow: auto;
+}
+
+.rbt-graph {
+    margin: 0.35rem 0.1rem 0.35rem 0.5rem;
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 20pt;
+}
+
+.rbt-graph svg {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.rbt-graph::after {
+    width: 0;
+    display: inline-block;
+}
+
+.rbt-graph:not(:last-child)::after {
+    content: ';';
+}
+
+.rbt-graph:last-child::after {
+    content: " ";
+}
+
+.rbt-wrapper {
+    text-align: center;
+}
+
+.rbt-sequence {
+    display: inline-block;
+    margin-left: -0.4rem;
+}
+
+.rbt-annot {
+    white-space: nowrap;
+}
