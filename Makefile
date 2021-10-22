@@ -6,11 +6,11 @@
 
 export COQPATH := $(shell pwd)/coq/
 
-driver := eval $$(opam env) && ./driver.py --template template --mathjax "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" talk.rst
+driver = eval $$(opam env) && ./driver.py --template template --mathjax "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" $(1).rst
 
 # --skip-help
-serve:
-	$(driver)
+serve-%:
+	$(call driver,$*)
 
 docs: talk.rst Makefile
 	$(driver) $@

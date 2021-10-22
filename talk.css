@@ -24,6 +24,10 @@ pre, code, samp, tt, .literal, a,
     font-size: 0.75em;
 }
 
+ul, ol {
+    margin-left: 1em;
+}
+
 .step {
   width: max-content;
   max-width: 1860px;

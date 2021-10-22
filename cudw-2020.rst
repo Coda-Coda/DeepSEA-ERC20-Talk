@@ -1,0 +1,271 @@
+:title: Alectryon for Coq's refman
+:css: talk.css
+:css: alectryon.css
+:css: tango_subtle.css
+:js-body: talk.js
+:js-body: alectryon.js
+:slide-numbers: true
+:data-transition-duration: 0.01
+:alectryon/serapi/args: -Q /home/clement/documents/mit/plv/blog/alectryon/paper/talk/coq/ ""
+
+.. :auto-console: true
+
+----
+
+.. container:: titlepage
+
+   .
+
+============================
+ Alectryon for Coq's refman
+============================
+
+Clément Pit-Claudel
+===================
+
+CUDW 2020
+---------
+
+.. note::
+
+   .
+
+----
+
+=======================
+ Quick Alectryon recap
+=======================
+
+- Record proofs as interactive webpages
+- Tangle reST documents into Coq files and back
+
+- This is just a recap, see the SLE paper or the blog post for more details.
+
+.. note::
+
+   .
+
+----
+
+.. code:: coq
+
+   Lemma Qle_pairwise : ∀ a b c d, 0 < a ∧ 0 < b ∧ 0 < c ∧ 0 < d →
+     (a + c)/(b + d) ≤ a/b + c/d.
+   Proof with Qeauto.
+     intros a b c d H.
+     field_simplify...
+     rewrite <- (Qmult_le_l (b + d)), Qmult_div_r, Qmult_Qdiv_fact...
+     rewrite <- (Qmult_le_l (b * d)), Qmult_div_r...
+     field_simplify.
+     rewrite <- (Qminus_le_l (b * d * a)); ring_simplify.
+     rewrite <- (Qminus_le_l (b * d * c)); ring_simplify.
+     Qeauto using Qsqr_0.
+   Qed.
+
+.. note::
+
+   Here's a Coq proof.  It's a bit hard to follow without knowing what's happening at each step.  Sometimes all you care is the proof and it doesn't matter, but sometimes you want to teach your readers something and then it does matter.
+
+----
+
+.. image:: coqide.png
+   :alt: CoqIDE showing a proof script and a goal.
+   :class: img-m
+
+.. note::
+
+   You can run the proof in your favorite IDE, but that means installing the right version of Coq, downloading the source code, and compiling its dependencies, which can be time consuming.  Besides, maybe you're looking at this proof in a book.
+
+----
+
+.. code:: coq
+
+   Lemma Qle_pairwise : ∀ a b c d, 0 < a ∧ 0 < b ∧ 0 < c ∧ 0 < d →
+      (a + c)/(b + d) ≤ a/b + c/d.
+   Proof with Qeauto.
+     intros a b c d H.
+     (** [(a + c) / (b + d) ≤ a / b + c / d] *)
+     field_simplify...
+     (** [(a + c) / (b + d) ≤ (a * d + c * b) / (b * d)] *)
+     rewrite <- (Qmult_le_l (b + d)), Qmult_div_r, Qmult_Qdiv_fact...
+     rewrite <- (Qmult_le_l (b * d)), Qmult_div_r...
+     (** [b * d * (a + c) ≤ (b + d) * (a * d + c * b)] *)
+     field_simplify.
+     (** [b * d * a + b * d * c ≤ b ^ 2 * c + b * d * a + b * d * c + d ^ 2 * a] *)
+     rewrite <- (Qminus_le_l (b * d * a)); ring_simplify.
+     rewrite <- (Qminus_le_l (b * d * c)); ring_simplify.
+     (** [0 ≤ b ^ 2 * c + d ^ 2 * a] *)
+     Qeauto using Qsqr_0.
+   Qed.
+
+.. note::
+
+   If the author of the proof is nice they might have annotated it to include all intermediate steps, but that takes a while to do and it's quite brittle.
+
+----
+
+.. container:: alectryon-block
+
+   .. coq:: unfold no-hyps
+
+      Require Import Qle. (* .none *)
+      Module Ex1. (* .none *)
+      Lemma Qle_pairwise : ∀ a b c d, 0 < a ∧ 0 < b ∧ 0 < c ∧ 0 < d →
+        (a + c)/(b + d) ≤ a/b + c/d. (* .fold *)
+      Proof with Qeauto. (* .fold *)
+        intros a b c d H.
+        field_simplify...
+        rewrite <- (Qmult_le_l (b + d)), Qmult_div_r, Qmult_Qdiv_fact... (* .fold *)
+        rewrite <- (Qmult_le_l (b * d)), Qmult_div_r...
+        field_simplify.
+        rewrite <- (Qminus_le_l (b * d * a)); ring_simplify. (* .fold *)
+        rewrite <- (Qminus_le_l (b * d * c)); ring_simplify.
+        Qeauto using Qsqr_0.
+      Qed.
+      End Ex1. (* .none *)
+
+.. note::
+
+   Instead, you can ask Alectryon to auto-generate these annotations, as a webpage.
+
+----
+
+.. code:: coq
+
+   (*|
+   A fairly common occurrence when working with dependent
+   types in Coq is to call `Compute` on a benign expression
+   and get back a giant, partially-reduced term, like this:
+   |*)
+
+   Import EqNotations Vector.VectorNotations.
+   Compute (hd (rew (Nat.add_1_r 3)
+                    in ([1; 2; 3] ++ [4]))). (* .unfold *)
+
+   (*|
+   This post shows how to work around this issue.
+   |*)
+
+.. note::
+
+   That was part one.  Part two is tooling for literate programming, which allows you to switch between a Coq view of your code and a text view of it.
+
+   Here's a snippet from a blog post.  That's Coq code.  But with the press of a button, I can turn than into a reStructuredText document.
+
+----
+
+.. code:: rst
+
+   A fairly common occurrence when working with dependent
+   types in Coq is to call `Compute` on a benign expression
+   and get back a giant, partially-reduced term, like this:
+
+   .. coq::
+
+      Import EqNotations Vector.VectorNotations.
+      Compute (hd (rew (Nat.add_1_r 3)
+                       in ([1; 2; 3] ++ [4]))). (* .unfold *)
+
+   This post shows how to work around this issue.
+
+.. note::
+
+   And I can go back.  Jour, nuit, jour, nuit.
+
+----
+
+====================================
+ Alectryon for the reference manual
+====================================
+
+- Coq repo currently has ``coqtop.py``
+- Should it go away?
+
+.. note::
+
+   Early on in my PhD I wrote a replacement for coqtex called coqtop.py as part the effort to switch the manual over to reST.  Coqtop.py uses coqtop to evaluate snippets of Coq code.  It's pretty stable, but it's pretty limited too: the sentence parsing is broken, the syntax highlighting is broken, there output isn't very customizable, etc.
+
+   So we have two options.  Stick with that, or move the refman to Alectryon.  I think moving the refman to Alectryon is pretty reasonable, so let me tell you what that buys us and how we would do it.
+
+   I should clarify that this isn't a big or wild change: it took me about 2 hours to get the refman to build with Alectryon for the evaluation section of the Alectryon paper.
+
+----
+
+What we gain
+============
+
+1. Better rendering
+2. Better control on proofs
+3. More robust builds: no coqtop
+4. Caching and regression testing
+5. Stepping through manual files
+6. Future good stuff from SerAPI
+
+.. note::
+
+   First, what it buys us:
+
+   - We get better rendering, including better syntax highlighting, the ability to toggle bits of proofs.
+   - We have inline annotations to decide what should be shown by default.
+   - The build does not depend on coqtop any more
+   - Coq's output can be cached, so making text-only edits to the manual doesn't require re-running Coq, and we get regression testing on the whole manual; for free by regenerating the caches and checking for unexpected changes.
+   - For RefMan files that include interactive examples, users can directly download a `.v` generated from each RefMan page if they want to experiment locally.
+   - Finally, since we're building on top of SerAPI, we get rich data, meaning that we can hope for things like delegating all syntax highlighting to Coq, hyperlinking identifiers to their definitions, etc.
+
+----
+
+What we pay
+===========
+
+1. Alectryon is more complex than ``coqtop.py``
+2. It needs to be distributed inside of Coq's repo
+3. Alectryon is built on top of SerAPI
+4. We need a compatibility layer, or some small refman changes
+
+.. note::
+
+   Now, what it costs us
+
+   - Alectryon is a few thousand lines of ode; coqtop.py was just 115 lines.
+   - We need to ship Alectryon with Coq somehow.
+   - We need to ship SerAPI with Coq.
+   - The refman uses annotations like abort or reset to reset Coq's state; we'd want to change these to actual calls to Abort or Reset.
+
+----
+
+What we pay
+===========
+
+1. Alectryon is more complex than ``coqtop.py``
+
+   | But it's still pretty small
+
+2. It needs to be distributed inside of Coq's repo
+
+   | We could just vendor it, or the relevant bits of it
+
+3. Alectryon is built on top of SerAPI
+
+   | It could be rebuilt on top of the XML API; the SerAPI part is just 250 lines
+
+4. We need a compatibility layer, or some small refman changes
+
+   | Probably a good thing, and it's backwards compatible with coqtop.py
+
+
+.. note::
+
+   I think it's not so bad.  Besides, all of that is backwards compatible: if I get hit by a bus we (well, not me, but you) can switch back to coqtop.py.
+
+----
+
+======================
+ Questions? Opinions?
+======================
+
+- Repo at `<https://github.com/cpitclaudel/alectryon/>`__
+- Refman build at `<https://alectryon-paper.github.io/>`__
+
+.. note::
+
+   Questions?

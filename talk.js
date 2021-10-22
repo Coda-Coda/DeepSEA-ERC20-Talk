@@ -83,7 +83,7 @@ function rbt() {
     }
 
     function prettify_messages() {
-        document.querySelectorAll(".rbt-render .coq-message").forEach(msg => {
+        document.querySelectorAll(".rbt-render .alectryon-message").forEach(msg => {
             try {
                 const m = msg.innerText.match(/^(=\s*)([\s\S]*)(:[\s\S]*)$/);
                 const data_str = m[2].replace(/;/g, ",").replace(/'/g, '"');
