@@ -1,11 +1,18 @@
 function mathjax_setup() {
-   var spans = document.querySelectorAll(".coq-mathjax .goal-conclusion .highlight, .coq-mathjax .goal-hyp .highlight");
-   spans.forEach(function (e) {
-       var text = e.innerText.replace(/ccForall\{(.*?)\}/g, function (_, quantified) {
-           return "ccForall{" + quantified.trim().replace(/ +/g, " \\: ") + "}";
-       });
-       var node = document.createTextNode('\\[' + text + '\\]');
-       e.parentNode.replaceChild(node, e);
+    var spans = document.querySelectorAll(
+        ".coq-mathjax .message, " +
+        ".coq-mathjax .goal-conclusion, " +
+        ".coq-mathjax .hyp-body > span, " +
+        ".coq-mathjax .hyp-type > span"
+    );
+    spans.forEach(function (e) {
+        var text = e.innerText.replace(
+            /ccForall\{(.*?)\}/g,
+            function (_, quantified) {
+                var q = quantified.trim().replace(/ +/g, " \\: ");
+                return "ccForall{" + q + "}";
+            });
+        e.innerText = '\\[' + text + '\\]';
    });
 }
 
@@ -19,7 +26,7 @@ function rbt() {
         const svg = node.append('svg');
         const inner = svg.append('g');
 
-        const DIM = 7;
+        const DIM = 6;
         var g = new dagreD3.graphlib.Graph().setGraph({rankdir: 'TB', edgesep: DIM, ranksep: DIM, nodesep: DIM});
 
         const EDGE_STYLES = { node: "stroke: #2e3436; stroke-width: 1.5; fill: none;", leaf: "visibility: hidden;" };

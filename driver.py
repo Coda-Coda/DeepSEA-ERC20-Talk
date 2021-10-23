@@ -4,14 +4,10 @@ from os.path import realpath
 import sys
 
 import hovercraft
-
-alectryon_root = realpath("/home/clement/documents/mit/plv/blog/alectryon/")
-sys.path.insert(0, alectryon_root)
-
 import alectryon.docutils
 alectryon.docutils.setup()
 
-from alectryon.core import SerAPI
+from alectryon.serapi import SerAPI
 SerAPI.DEFAULT_PP_ARGS["pp_margin"] = 70
 
 from hovercraft.parse import SlideMaker

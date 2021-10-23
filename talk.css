@@ -9,11 +9,12 @@ mjx-container,
 .MathJax_PHTML_Preview,
 .MathJax_MathML {
     margin: 0 !important;
+    text-align: unset !important;
 }
 
 html {
   font-family: 'Fira Sans';
-  font-size: 40pt;
+  font-size: 38pt;
 }
 
 /* Coq fonts */
@@ -101,7 +102,7 @@ img {
   margin: auto;
   display: block;
   max-width: 1800px;
-  max-height: 950px;
+  max-height: 800px;
 }
 
 .twocolumns {
@@ -119,16 +120,6 @@ img {
 }
 
 .img-s {
-  width: auto;
-  height: 600px;
-}
-
-.img-stdlib {
-  width: 400px;
-  height: auto;
-}
-
-.img-breakdowns {
   width: auto;
   height: 600px;
 }
@@ -193,7 +184,7 @@ img {
 
 /* rbt */
 
-.rbt-no-printing .coq-message {
+.rbt-no-printing .alectryon-message {
   font-size: x-small !important;
   max-height: 10rem;
   overflow: auto;
