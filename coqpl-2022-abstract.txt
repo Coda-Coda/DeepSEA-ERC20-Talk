@@ -1,0 +1,7 @@
+Coq meets literate programming: tools for documenting, preserving, and sharing mechanized proofs
+
+Coq proofs are unlike pen-and-paper proofs in one key way: in Coq, we write tactics that describe how to advance the proof, but we leave the tedium of computing the resulting proof states (goals) to the machine.  Advanced user interfaces display these proof goals in real time (like Proof General, jsCoq, and CoqIDE) and make it relatively easy to read proof scripts.
+
+Unfortunately, these interactive interfaces are not universally applicable: they don't work in printed materials, email, or on simple websites, for example.   As a result, most written material on Coq either shows very few proofs, or includes manual copies of goals and responses computed by Coq — a tedious and error-prone process.
+
+I recently released Alectryon, an automated proof-recorder and literate-programming toolkit for Coq (work is in progress to support EasyCrypt and Lean).  This talk will introduce Alectryon, describe some recent extensions to it aimed at supporting larger and more complex Coq developments, demonstrate how to use it for your own Coq code, and serve as a call to action to improve the state of the art in the documentation and distribution of Coq proofs.
