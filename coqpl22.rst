@@ -12,6 +12,29 @@
 
 ----
 
+.. raw:: html
+
+   <script type="text/javascript">
+     MathJax = {
+         options: {
+             skipHtmlTags: [
+                 'script', 'noscript', 'style', 'textarea',
+                 'annotation', 'annotation-xml'
+             ]
+         },
+         startup: {
+             pageReady: function () {
+                 mathjax_setup();
+                 return MathJax.startup.defaultPageReady();
+             }
+         }
+     };
+   </script>
+
+   <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+   </script>
+
 .. container:: titlepage
 
    .
@@ -150,6 +173,11 @@ TODO Coq proof from job talk
 
    Now contrast this with the same proof, in Coq.  There is what we want to prove at the top, Qed at the bottom, and some unintelligible gibberish in the middle.
 
+   Proof *script*.  Sequence of steps/tactics like …, from premises to conclusion.
+
+   Not what mathematicians call “a proof”.
+   Missing *goals*, …. That's because computed.
+
 ---
 
 TODO math proof
@@ -174,7 +202,7 @@ TODO theorem from Koika
 
 .. note::
 
-   Of course, not do be overdone, some of us swing all the way to the other side.  The theorem above states correctness for a compiler I wrote not so long ago.  If you're going to use the compiler, does it matter how the 5000 lines Coq proof works?  Its so automated that there are places where even I don't know exactly how it works.  Heck, the best part of my job is when I change the compiler and the proof automation is good enough that it keeps going through.  It tells me the one thing that I care about, which is that the compiler is actually correct.
+   Of course, not do be overdone, some of us swing all the way to the other side.  This theorem states correctness for a compiler I wrote not so long ago.  If you're going to use the compiler, does it matter how the 5000 lines Coq proof works?  Its so automated that there are places where even I don't know exactly how it works.  Heck, the best part of my job is when I change the compiler and the proof automation is good enough that it keeps going through.  It tells me the one thing that I care about, which is that the compiler is actually correct.
 
 ---
 
@@ -184,338 +212,16 @@ TODO CoqIDE gif
 
    Of course not all proofs are like that: often we are looking to communicate something through the proof.  We are not just proving things to make sure that we're correct; we're also hoping to share the proof.  In Coq the way we can do this is by running inside of a proof assistant.
 
-   TODO: copy text about this not working for offline, etc.
-
----
-
-TODO import slides on state of the art.
-
----
-
-TODO import slides on literate programming
-
----
-
-TODO JSON diff showing before / after Nat redefinition
-
-.. note::
-
-   I won't dive deep into the way Alectryon is implemented, but I'll point out one thing: it's smart enough to decouple your prose from your code, and to cache the results of running the code.  The result is that you get a stable archive of the whole proof, not just the scripts, and you can use that to check for breakage over time.
-
----
-
-TODO: Demo on how it works
-
-- Basics: Coq document
-- IDE support
-- Mini-language for customized display
-- References and Quotes
-- Custom driver
-- Extensions for custom rendering
-- Polyglot documents
-- Diffs on JSON
-
-
-
-Check README for things I'd have forgotten.
-
-Taking stock
-============
-
-.. note::
-
-   Backing up a bit, let me try to address what's missing.  First I'd like to broaden our perspective on documentation a bit, and second I'd like to talk about a recent development, along with a challenge.
-
----
-
-What's documentation, anyway?
------------------------------
-
-Internal, external, and per-object.
-
-.. note::
-
-   I'd argue that given a Coq development, there are really three kinds of documentation that we may want: internal, external, and per-object.
-
----
-
-TODO alectryon document picture
-
-.. note::
-
-   The first one is “internal documentation”.  It's what Alectryon was originally developed for: interleaving commentary and code in a way that still lets the reader process everything sequentially.  It's exhaustive: the intent is that it serves as a prose description of what's happening throughout a document.  This is the kind of document that you use when you want your reader to be able to reproduce the same tricks.
-
-   TODO: Example of Koika tutorial
-
----
-
-TODO Hydra-battles
-
-.. note::
-
-   The second one is “external documentation”.  Here the idea is that you have a Coq development that accompanies a mathematical text, but the two live separately.  Still, you want them to be closely connected, so you import definitions, proof fragments, etc. from the Coq code into the math document.  This is the kind of doc you use when you want the reader to have a high-level understanding, coupled with specific places where you zoom in.
-
-   Originally Alectryon didn't support this at all, but recently I've had the pleasure of working with Pierre, Karl, and Théo on extending it.
-
-   The way we did this is by adding markers into the Coq code to make it clear which bits we wanted to import, and using a custom Alectryon driver; but in the long run I'd like to improve Alectryon's quoting and cross-referencing facilities to make this even easier.
-
----
-
-TODO tactic docs from refman
-
-.. note::
-
-   The third one is per-object documentation: this is the programmer's view of the system.  This is not intended to tell a story or pull multiple objects together; instead, it's an exploded view that documents each object one at a time.
-
-   We don't have a story about this in Alectryon at the moment, short of documenting objects separately from their definitions.  This is what we do in the reference manual of Coq, in fact: we document each object using reStructuredText constructs.
-
-   In the long run I'd like to see better integration of docstrings and per-object documentation into Alectryon.  The idea would be that just like the external docs allow you to pull proof fragments and definitions from a file, they should allow you to pull complete objects, including their docstrings, to allow you to weave a story around these objects, like documenting an API.
-
-   I'm looking for collaborators to work on these aspects, and I hope that you'll join me to build the next generation of self-documenting Coq proofs.
-
----
-
-On rendering proof objects
---------------------------
-
-.. note::
-
-   The second aspect that I'd like to spend a bit more time on is rendering.  I've given a few demos already, but let me walk through a different example.
-
----
-
-TODO: Sep logic formula
-
-.. note::
-
-   Here is a separation logic formula.  It captures the way some objects are laid out in memory.
-   (Describe the formula)
-
----
-
-TODO: Sep logic picture
-
-.. note::
-
-   Here is the same formula, rendered in a way that I hope we can all agree is more pleasant.
-
----
-
-TODO: Step through sep logic proof from Arthur.
-TODO: Demo how this works:
-
-- Coq notation to print easily parsable notation
-- PEG grammar to parse sep logic
-- JS library to cluster the graph and translate it to DOT
-- Graphviz library compiled to JavaScript to generate the rendering
-
----
-
-It's a hack!
-------------
-
-.. note::
-
-   This is all nice and well, but it's a hack!  It works for this small example because of the specific way I've designed it, and the same is true for most of these rendering examples that I've shown you.  Think of using LaTeX to render math, for example: it doesn't scale to large Coq terms, and it requires hacking Coq notations.
-
----
-
-Doing it right
---------------
-
-- Allow alternative notation domains
-- Define a rendering language
-
-.. note::
-
-   What's the non-hacky way to do this?
-
-   It's "easy": first we need to allow users to define their own notations.  Basically, we want to extend Coq's notation system to support alternative notation domains: you'd define how to map your Coq code not just to text, but to pictures, latex, etc.
-
-   Notations in these alternative domains would be expressed in domain-specific languages: one for graphs, one for LaTeX math, one for pretty-printed text, one for syntax highlighting, etc.
-
-   The lean folks already do some of this, btw: there's really cool work on widgets that lets you map arbitrary lean structures to HTML.
-   I think the problem is that it puts too much responsibility on the programmer.  This will become clear when I walk through the challenges.
-
----
-
-Challenges
-----------
-
-- It requires continuous solutions
-- It's optimization problem across multiple domains
-- It needs to work well statically but also to allow editing
-
-.. note::
-
-   There are many challenges that make this problem a bit different from traditional DSLs for drawing pictures.
-
-   - First, it requires continuous solutions: small changes in goal ⇒ small changes in picture.  This rules out naive randomized "best placement" algorithms.
-
-     And we want it to work even with partial proofs, so we can't optimize by looking at all proof states.
-
-   - Second, things get really hairy when you get into multiple domains: LaTeX in nodes of graph, or Coq code within deduction rule syntax, etc.  (Describe issue with Coq code inside graph)
-
-   - Third, we're hoping that this works for static media like paper, and even if we can assume interactive media we want users to not have to click through too much.  So, we need a lot of customizability.
-
-     And we need to figure out editing.  My current thinking on this is that we can cheat a bit.  It turns out that in most cases the hierarchical structure of the text is reflected in the figure, and each part of the figure maps to a piece of text, recursively; so, we can just revert to text for the part of the figure that's being edited.
-
----
-
-Thanks!
-=======
-
-TODO: related work
-
-.. note::
-
-   And that's what I'll leave you with!  I've shown some of the related work on this side, because everything that I've presented here exists thanks to half a century of efforts and reflection.  Please come talk to me if you're curious about these issues, and let's use the remaining time we have to discuss what I've missed!
-
-=====================
- A tour of Alectryon
-=====================
-
-.. note::
-
-   Back in undergrad I taught in high school for a few months. There was a proof I liked to show my students, because it surprised most of them.
-
-----
-
-.. raw:: html
-
-   <script type="text/javascript">
-     MathJax = {
-         options: {
-             skipHtmlTags: [
-                 'script', 'noscript', 'style', 'textarea',
-                 'annotation', 'annotation-xml'
-             ]
-         },
-         startup: {
-             pageReady: function () {
-                 mathjax_setup();
-                 return MathJax.startup.defaultPageReady();
-             }
-         }
-     };
-   </script>
-
-   <script type="text/javascript" id="MathJax-script" async
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-   </script>
-
-.. container:: xxxxl
-
-   .. math:: \frac{a}{c} + \frac{b}{d} \not= \frac{a + b}{c + d}
-
-.. note::
-
-   This was the setup: every student knows that you can't sum fractions element-wise.
-   What many students don't know is that you *can*, actually, as long as long you're just trying to prove an inequality.
-
-----
-
-.. container:: xxxxl
-
-   .. math:: \frac{a}{c} + \frac{b}{d} \ge \frac{a + b}{c + d}
-
-.. note::
-
-   My main line of research is doing proofs with the Coq proof assistant, so let me share a Coq proof of this inequality.
-
-----
-
-.. raw:: html
-
-   <div style="display: none">
-       \(\newcommand{\ccQ}{\mathbb{Q}}\)
-       \(\newcommand{\ccNat}{\mathbb{N}}\)
-       \(\newcommand{\ccSucc}[1]{\mathrm{S}\:#1}\)
-       \(\newcommand{\ccFrac}[2]{\frac{#1}{#2}}\)
-       \(\newcommand{\ccPow}[2]{{#1}^{#2}}\)
-       \(\newcommand{\ccNot}[1]{{\lnot #1}}\)
-       \(\newcommand{\ccEvar}[1]{\textit{\texttt{#1}}}\)
-       \(\newcommand{\ccForall}[2]{\forall \: #1. \; #2}\)
-       \(\newcommand{\ccNsum}[3]{\sum_{#1 = 0}^{#2} #3}\)
-   </div>
-
-.. container:: proof-overlay
-
-   .. code:: coq
-
-      Lemma Qle_pairwise : ∀ a b c d, 0 < a ∧ 0 < b ∧ 0 < c ∧ 0 < d →
-        (a + c)/(b + d) ≤ a/b + c/d.
-      Proof with Qeauto.
-        intros a b c d H.
-        field_simplify...
-        rewrite <- (Qmult_le_l (b + d)), Qmult_div_r, Qmult_Qdiv_fact...
-        rewrite <- (Qmult_le_l (b * d)), Qmult_div_r...
-        field_simplify.
-        rewrite <- (Qminus_le_l (b * d * a)); ring_simplify.
-        rewrite <- (Qminus_le_l (b * d * c)); ring_simplify.
-        Qeauto using Qsqr_0.
-      Qed.
-
-   .. class:: substep
-
-      .. image:: coq.png
-         :class: rooster-sticker
-
-.. note::
-
-   Statement at top, Qed at bottom, all good?
-
-   How about with a little rooster to the side, convinced now?
-
-   Show of hands: who learnt something deep from looking at this "proof"?
-
-   Proof *script*.  Sequence of steps/tactics like multiply both sides, from premises to conclusion.
-
-   Not what mathematicians call “a proof”.
-   Missing *goals*, …. That's because computed.
-
-----
-
-.. image:: coqide.png
-   :alt: CoqIDE showing a proof script and a goal.
-   :class: img-m
-
-.. note::
-
-   Of course states redundant, in a sense.  But downside: reading a proof script is impossible.
-
-
-   Sometimes don't why proof is true.  E.g. program properties, or large enumeration of cases.  Coq happy I'm happy.
-
-   But sometimes there's content.  Interesting info.
-   Want to show not just steps, goals.
-
    If readers have Coq installed, OK.
    But sometimes not right version, or proof has dependencies, or compilation slow, or mobile phone, or browsing casually, or… writing book!
 
    So what do people do to write manuals, tutorials, textbooks, blog posts, or any other piece of text that mixes Coq proofs and prose?
 
-----
+---
 
 .. code:: coq
 
-   Lemma Qle_pairwise : ∀ a b c d, 0 < a ∧ 0 < b ∧ 0 < c ∧ 0 < d →
-     (a + c)/(b + d) ≤ a/b + c/d.
-   Proof with Qeauto.
-     intros a b c d H.
-     (** [(a + c) / (b + d) ≤ a / b + c / d] *)
-     field_simplify...
-     (** [(a + c) / (b + d) ≤ (a * d + c * b) / (b * d)] *)
-     rewrite <- (Qmult_le_l (b + d)), Qmult_div_r, Qmult_Qdiv_fact...
-     rewrite <- (Qmult_le_l (b * d)), Qmult_div_r...
-     (** [b * d * (a + c) ≤ (b + d) * (a * d + c * b)] *)
-     field_simplify.
-     (** [b * d * a + b * d * c ≤ b ^ 2 * c + b * d * a + b * d * c + d ^ 2 * a] *)
-     rewrite <- (Qminus_le_l (b * d * a)); ring_simplify.
-     rewrite <- (Qminus_le_l (b * d * c)); ring_simplify.
-     (** [0 ≤ b ^ 2 * c + d ^ 2 * a] *)
-     Qeauto using Qsqr_0.
-   Qed.
+   TODO image with manual annots
 
 .. note::
 
@@ -599,28 +305,13 @@ TODO: related work
    1. Compiler: captures Coq output and interleaves it in original proof script as webpage.
    2. Literate programming system for Coq.
 
-
 ----
 
 .. container:: alectryon-block
 
    .. coq:: unfold no-hyps
 
-      Require Import Qle. (* .none *)
-      Module Ex1. (* .none *)
-      Lemma Qle_pairwise : ∀ a b c d, 0 < a ∧ 0 < b ∧ 0 < c ∧ 0 < d →
-        (a + c)/(b + d) ≤ a/b + c/d. (* .fold *)
-      Proof with Qeauto. (* .fold *)
-        intros a b c d H.
-        field_simplify...
-        rewrite <- (Qmult_le_l (b + d)), Qmult_div_r, Qmult_Qdiv_fact... (* .fold *)
-        rewrite <- (Qmult_le_l (b * d)), Qmult_div_r...
-        field_simplify.
-        rewrite <- (Qminus_le_l (b * d * a)); ring_simplify. (* .fold *)
-        rewrite <- (Qminus_le_l (b * d * c)); ring_simplify.
-        Qeauto using Qsqr_0.
-      Qed.
-      End Ex1. (* .none *)
+      TODO
 
 .. note::
 
@@ -634,55 +325,50 @@ TODO: related work
 
    Everything is web technologies → flexible rendering.
 
+
+.. coq:: unfold
+
+   Lemma Gauss: ∀ n, 2 * (sum n) = n * (n + 1). (* .fold *)
+   Proof. (* .fold *)
+     induction n. (* .fold *)
+     - (* n ← 0 *)
+       reflexivity.
+     - (* n ← S _ *)
+       cbn [sum].
+       rewrite Mult.mult_plus_distr_l.
+       rewrite IHn.
+       ring_simplify.
+       reflexivity.
+   Qed.
+
+
+.. note::
+
+   Here's what it looks on another simple proof.
+
 ----
 
 .. container:: coq-mathjax
 
-   .. coq:: unfold no-hyps
+   .. coq:: unfold
 
-      Module Ex3. (* .none *)
+      Module Gauss. (* .none *)
       Import LatexNotations. (* .none *)
-      Lemma Qle_pairwise : ∀ a b c d, 0 < a ∧ 0 < b ∧ 0 < c ∧ 0 < d →
-        (a + c)/(b + d) ≤ a/b + c/d. (* .fold *)
-      Proof with Qeauto. (* .fold *)
-        intros a b c d H.
-        field_simplify...
-        rewrite <- (Qmult_le_l (b + d)), Qmult_div_r, Qmult_Qdiv_fact... (* .fold *)
-        rewrite <- (Qmult_le_l (b * d)), Qmult_div_r...
-        field_simplify.
-        rewrite <- (Qminus_le_l (b * d * a)); ring_simplify. (* .fold *)
-        rewrite <- (Qminus_le_l (b * d * c)); ring_simplify.
-        Qeauto using Qsqr_0.
+      Lemma Gauss: ∀ n, 2 * (nsum n (fun i => i)) = n * (n + 1).
+      Proof. (* .fold *)
+        induction n; cbn [nsum]. (* .fold *)
+        - (* n ← 0 *)
+          reflexivity.
+        - (* n ← S _ *)
+          rewrite Mult.mult_plus_distr_l. (* .no-hyps *)
+          rewrite IHn. (* .no-hyps *)
+          ring.
       Qed.
-      End Ex3. (* .none *)
-      Open Scope nat_scope. (* .none *)
+      End Gauss. (* .none *)
 
 .. note::
 
    Use web tech to give meaningful rendering.
-   Good shot at understanding: sum fracs, same denominator, cancel, greater than 0
-
-..
-   ----
-
-   .. coq:: unfold
-
-      Lemma Gauss: ∀ n, 2 * (sum n) = n * (n + 1). (* .fold *)
-      Proof. (* .fold *)
-        induction n. (* .fold *)
-        - (* n ← 0 *)
-          reflexivity.
-        - (* n ← S _ *)
-          cbn [sum].
-          rewrite Mult.mult_plus_distr_l.
-          rewrite IHn.
-          ring_simplify.
-          reflexivity.
-      Qed.
-
-   .. note::
-
-      Here's what it looks on another simple proof, forgetting about the fancy LaTeX stuff for a moment.
 
 ----
 
@@ -834,97 +520,6 @@ TODO: related work
 
 ----
 
-================
- Implementation
-================
-
-.. container:: s
-
-   Generate an interactive webpage from a literate Coq file with reST comments (Coqdoc style):
-      .. code::
-
-         ../alectryon.py literate.v
-
-   Generate an interactive webpage from a plain Coq file (Proof General style):
-      .. code::
-
-         ../alectryon.py --frontend coq plain.v
-
-   Generate an interactive webpage from a Coqdoc file (compatibility mode):
-      .. code::
-
-         ../alectryon.py --frontend coqdoc literate.v
-
-   Compile a reStructuredText document containing ``.. coq::`` blocks (coqrst style):
-      .. code::
-
-         ../alectryon.py literate.v.rst
-
-   Translate a reStructuredText document into a literate Coq file:
-      .. code::
-
-         ../alectryon.py literate.v.rst -o literate.v
-
-   Translate a literate Coq file into a reStructuredText document:
-      .. code::
-
-         ../alectryon.py literate.v -o literate.v.rst
-
-   Record goals and responses for fragments contained in a JSON source file:
-      .. code::
-
-         ../alectryon.py fragments.json
-
-   Record goals and responses and format them as HTML for fragments contained in a JSON source file:
-      .. code::
-
-         ../alectryon.py fragments.json -o fragments.snippets.html
-
-.. note::
-
-   Now that I've given you a sense of what Alectryon does, let me say a bit about how it does it.
-
-   Alectryon is a Python program, and it's written as a collection of mostly independent modules:
-
-----
-
-.. coq:: unfold
-
-   (* Can you favorite IDE handle this?
-      (mine can't, and I'm one of the maintainers…) *)
-   Notation "( a . b )" := (a, b).
-   Check (0 . 1).
-
-.. note::
-
-   Coq frontend.
-
-----
-
-.. container:: coq-mathjax
-
-   .. coq:: unfold
-
-      Module Gauss. (* .none *)
-      Import LatexNotations. (* .none *)
-      Lemma Gauss: ∀ n, 2 * (nsum n (fun i => i)) = n * (n + 1).
-      Proof. (* .fold *)
-        induction n; cbn [nsum]. (* .fold *)
-        - (* n ← 0 *)
-          reflexivity.
-        - (* n ← S _ *)
-          rewrite Mult.mult_plus_distr_l. (* .no-hyps *)
-          rewrite IHn. (* .no-hyps *)
-          ring.
-      Qed.
-      End Gauss. (* .none *)
-
-.. note::
-
-   Transforms to post-process Coq's output; either in Python or later in JS.
-
-----
-
 .. raw:: html
 
    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
@@ -979,195 +574,194 @@ TODO: related work
 
 ----
 
+.. image:: life.svg
+
+.. note::
+
+   Third example: life
+
+-----
+
 .. image:: rss.paths.svg
    :class: img-m
 
 .. note::
 
-   Another component: HTML export.  Careful to use the right web tech to support wide range of use cases, including RSS feeds.
+   And here instead is a completely different rendering: plain HTML.  Careful to use the right web tech to support wide range of use cases, including RSS feeds.
 
-----
+---
 
-.. code:: coq
-
-   Check "Where does this string (|* end? ".
-   (*| And where does `"this comment *|)` end?" |*)
-   Check "here? *)".
-
-.. code:: rst
-
-   .. coq::
-
-      Check "Where does this string (|* end? ".
-
-   And where does `"this comment *|)` end?"
-
-   .. coq::
-
-      Check "here? *)".
+TODO JSON diff showing before / after Nat redefinition
 
 .. note::
 
-   Then literate module to weave and tangle back and forth.
-   Must keep track of positions, so keep context when switching views.
+   I won't dive deep into the way Alectryon is implemented, but I'll point out one thing: it's smart enough to decouple your prose from your code, and to cache the results of running the code.  The result is that you get a stable archive of the whole proof, not just the scripts, and you can use that to check for breakage over time.
 
-----
+---
 
-.. image:: sphinx.png
-   :class: img-m
+TODO: Demo on how it works
 
-.. note::
+- Basics: Coq document
+- IDE support
+- Mini-language for customized display
+- References and Quotes
+- Custom driver
+- Extensions for custom rendering
+- Polyglot documents
+- Diffs on JSON
 
-   Finally connect to reStructuredText or Markdown pipelines with Docutils and Sphinx.
+TODO Check README for things I'd have forgotten.
 
-----
-
-============
- Evaluation
+Taking stock
 ============
 
 .. note::
 
-   The paper has a lot of evaluation, and I encourage you to check it out if you're curious; in brief, the evaluation is organized around two axes:
+   Backing up a bit, let me try to address what's missing.  First I'd like to broaden our perspective on documentation a bit, and second I'd like to talk about a recent development, along with a challenge.
 
-----
+---
 
-.. image:: polymorphic-universes-8-12.svg
-   :class: img-m
+What's documentation, anyway?
+-----------------------------
 
-.. note::
-
-   First axis: robustness.  Compiled hundreds of thousands of lines of Coq code, all of standard library, books, tutorials: it works.  Even compiled entire first volume of Software foundations.
-
-   Confusing!  I said reST but SF is coqdoc.  Actually example of extensibility.  Using coqdoc as markup language for prose, and code with Alectryon.
-
-----
-
-.. container:: twocolumns
-
-   .. image:: stdlib.paths.svg
-      :class: img-stdlib
-
-   .. image:: breakdowns.paths.svg
-      :class: img-breakdowns
+Internal, external, and per-object.
 
 .. note::
 
-   The second axis measures Alectryon's speed.  All the graphs are in the paper, but the long story short is that Alectryon has a median overhead of 3x on compilation times (90% of all files fall below 7x), and a good 1/3 of that is communication overhead that can probably be eliminated in the future.  The rest is the overhead of collecting and formatting goals, which can be pretty costly for files that have a many goals.
+   I'd argue that given a Coq development, there are really three kinds of documentation that we may want: internal, external, and per-object.
 
-----
+---
 
-==============
- Related work
-==============
+TODO alectryon document picture
+
+.. note::
+
+   The first one is “internal documentation”.  It's what Alectryon was originally developed for: interleaving commentary and code in a way that still lets the reader process everything sequentially.  It's exhaustive: the intent is that it serves as a prose description of what's happening throughout a document.  This is the kind of document that you use when you want your reader to be able to reproduce the same tricks.
+
+   TODO: Example of Koika tutorial
+
+---
+
+TODO Hydra-battles
+
+.. note::
+
+   The second one is “external documentation”.  Here the idea is that you have a Coq development that accompanies a mathematical text, but the two live separately.  Still, you want them to be closely connected, so you import definitions, proof fragments, etc. from the Coq code into the math document.  This is the kind of doc you use when you want the reader to have a high-level understanding, coupled with specific places where you zoom in.
+
+   Originally Alectryon didn't support this at all, but recently I've had the pleasure of working with Pierre, Karl, and Théo on extending it.
+
+   The way we did this is by adding markers into the Coq code to make it clear which bits we wanted to import, and using a custom Alectryon driver; but in the long run I'd like to improve Alectryon's quoting and cross-referencing facilities to make this even easier.
+
+---
+
+TODO tactic docs from refman
+
+.. note::
+
+   The third one is per-object documentation: this is the programmer's view of the system.  This is not intended to tell a story or pull multiple objects together; instead, it's an exploded view that documents each object one at a time.
+
+   We don't have a story about this in Alectryon at the moment, short of documenting objects separately from their definitions.  This is what we do in the reference manual of Coq, in fact: we document each object using reStructuredText constructs.
+
+   In the long run I'd like to see better integration of docstrings and per-object documentation into Alectryon.  The idea would be that just like the external docs allow you to pull proof fragments and definitions from a file, they should allow you to pull complete objects, including their docstrings, to allow you to weave a story around these objects, like documenting an API.
+
+   I'm looking for collaborators to work on these aspects, and I hope that you'll join me to build the next generation of self-documenting Coq proofs.
+
+---
+
+On rendering proof objects
+--------------------------
+
+.. note::
+
+   The second aspect that I'd like to spend a bit more time on is rendering.  I've given a few demos already, but let me walk through a different example.
+
+---
+
+TODO: Sep logic formula
+
+.. note::
+
+   Here is a separation logic formula.  It captures the way some objects are laid out in memory.
+   (Describe the formula)
+
+---
+
+TODO: Sep logic picture
+
+.. note::
+
+   Here is the same formula, rendered in a way that I hope we can all agree is more pleasant.
+
+---
+
+TODO: Step through sep logic proof from Arthur.
+TODO: Demo how this works:
+
+- Coq notation to print easily parsable notation
+- PEG grammar to parse sep logic
+- JS library to cluster the graph and translate it to DOT
+- Graphviz library compiled to JavaScript to generate the rendering
+
+---
+
+It's a hack!
+------------
+
+.. note::
+
+   This is all nice and well, but it's a hack!  It works for this small example because of the specific way I've designed it, and the same is true for most of these rendering examples that I've shown you.  Think of using LaTeX to render math, for example: it doesn't scale to large Coq terms, and it requires hacking Coq notations.
+
+---
+
+Doing it right
+--------------
+
+- Allow alternative notation domains
+- Define a rendering language
+
+.. note::
+
+   What's the non-hacky way to do this?
+
+   It's "easy": first we need to allow users to define their own notations.  Basically, we want to extend Coq's notation system to support alternative notation domains: you'd define how to map your Coq code not just to text, but to pictures, latex, etc.  Conveniently, because the notations are not reparseable, we don't can just pass the AST to a tactic that has full introspection access to the term, instead of having to do notations the way they are currently done in Coq.
+
+   Notations in these alternative domains would be expressed in domain-specific languages: one for graphs, one for LaTeX math, one for pretty-printed text, one for syntax highlighting, etc.
+
+   The lean folks already do some of this, btw: there's really cool work on widgets that lets you map arbitrary lean structures to HTML.
+   I think the problem is that it puts too much responsibility on the programmer.  This will become clear when I walk through the challenges.
+
+---
+
+Challenges
+----------
+
+- It requires continuous solutions
+- It's optimization problem across multiple domains
+- It needs to work well statically but also to allow editing
+
+.. note::
+
+   There are many challenges that make this problem a bit different from traditional DSLs for drawing pictures.
+
+   - First, it requires continuous solutions: small changes in goal ⇒ small changes in picture.  This rules out naive randomized "best placement" algorithms.
+
+     And we want it to work even with partial proofs, so we can't optimize by looking at all proof states.
+
+   - Second, things get really hairy when you get into multiple domains: LaTeX in nodes of graph, or Coq code within deduction rule syntax, etc.  (Describe issue with Coq code inside graph: sep logic *and* RB tree w/ unknown subtree)
+
+   - Third, we're hoping that this works for static media like paper, and even if we can assume interactive media we want users to not have to click through too much.  So, we need a lot of customizability.
+
+     And we need to figure out editing.  My current thinking on this is that we can cheat a bit.  It turns out that in most cases the hierarchical structure of the text is reflected in the figure, and each part of the figure maps to a piece of text, recursively; so, we can just revert to text for the part of the figure that's being edited.
+
+---
+
+Thanks!
+=======
 
 .. image:: citations.paths.svg
 
 .. note::
 
-   It's hard to do justice to all the related work in this area in just a few minutes, so I'll simply say that Alectryon builds on decades of great ideas for making programs and proofs more understandable, all the way from a paper in 1980 co-authored by Eric Schmidt and Phil Wadler to PhD theses written just a year ago.  There's 60 citations and three pages of related work in the paper; if you're curious about the history of this stuff, you should really have a look.
+   And that's what I'll leave you with!  I've shown some of the related work on this side, because everything that I've presented here exists thanks to almost a century of efforts and reflection.
 
-----
-
-.. container:: xxxl
-
-   | `<https://github.com/cpitclaudel/alectryon/>`__
-   | `<https://alectryon-paper.github.io/>`__
-
-.. note::
-
-   To recap, Alectryon provides an architecture to record and visualize Coq proofs, facilitating sharing and interactive exploration of proof scripts; and a bidirectional translator between woven and tangled documents, enabling seamless editing of prose and code.
-
-   Alectryon is freely available on GitHub, and it's received great reception from the community.
-
-----
-
-.. container:: xxxxl
-
-   .. math:: \LaTeX
-
-.. note::
-
-   Maybe I can conclude with a few words about the next steps.  Here are some directions that I'm exploring or would like help exploring.
-   First, I'd like to make a LaTeX backend: reStructuredText can produce LaTeX in addition to HTML, so it would make sense to support that as well.  I have a branch for this, and it's almost ready.
-
-----
-
-.. image:: life.svg
-
-.. note::
-
-   Second, I'd like to explore advanced visualizations further.  There are many domains for which the natural visualization for a piece of data is not text.  I have a few examples in the paper, but I'd like to push that idea further.  In fact, what would be really neat would be to settle on a standard for Coq developments to specify how to render a particular type.  I'm thinking of display-only notations that would produce images, graphs, plots, etc.  Once we have this, we could even integrate it with IDEs and finally stop envying the Racket folks with their magic picture tricks.
-
-----
-
-.. coq:: none
-
-   Require Import String.
-   Inductive Prog :=
-   | Boring0
-   | Boring1
-   | Bind (var: string) (expr: Prog) (body: Prog)
-   | Boring2
-   | Boring3.
-
-   Inductive Value: Type :=
-     BoringValue.
-
-   Inductive ComputesTo : Prog -> Value -> Prop :=
-   | ComputesToAny : forall p v, ComputesTo p v.
-
-   Definition context := list (string * Value).
-
-   Require Import Lists.List.
-   Import ListNotations.
-
-   Fixpoint interp (gamma: context) (p: Prog) :=
-     match p with
-     | Bind var expr body => let val := interp gamma expr in interp ((var, val) :: gamma) body
-     | _ => BoringValue
-     end.
-
-   Tactic Notation "t" := constructor.
-   Tactic Notation "…" := constructor.
-
-.. coq::
-
-   Lemma interp_sound: forall (p: Prog) (gamma: context) (v: Value),
-       ComputesTo p (interp gamma p).
-   Proof.
-     induction p; intros.
-     - t.
-     - t.
-     - simpl. (* .unfold *)
-       ….
-     - t.
-     - t.
-   Qed.
-
-.. note::
-
-   Third, for all the machine learning wizards out there, I'd like to explore automatic proof summarization — just like automatically identifying the most exciting moments of a soccer game, but for Coq proofs.  More formally, the task is to automatically identify a small subset of proof steps that lead to particularly interesting or relevant goals; we'd use this in combination with Alectryon to identify the most interesting parts of a proof development.
-
-----
-
-.. image:: provers.svg
-
-.. note::
-
-   Finally, I'd like to extend the system to other languages, both for the markup side and for the Coq side.  I built Alectryon with Coq and reStructuredText, but very little of it is actually Coq or reStructuredText specific.
-
-   To port Alectryon to a different language, like Lean for example, you would need to add a Python module that invokes Lean and collects its output, and if you also wanted the literate programming support you'd want to make a bidirectional translator for Lean's comment syntax.
-
-   The literate programming parts were actually inspired by work that I did for F* a few years ago, so adding new languages really shouldn't be too hard.  If you're interested in getting Alectryon to work with your favorite proof assistant, please get in touch.
-
-----
-
-.. container:: xxxl
-
-   | `<https://github.com/cpitclaudel/alectryon/>`__
-   | `<https://alectryon-paper.github.io/>`__
-
-.. note::
-
-   Thanks for your attention!  Feel free to reach out if you have questions, and check the README and the paper for lots of extra info.
+   To recap, Alectryon provides an architecture to record and visualize Coq proofs, which facilitates sharing and interactive exploration of proof scripts, and a bidirectional translator between woven and tangled documents, enabling seamless editing of prose and code.  The next step is to invest in rendering: please come talk to me if you're curious about these issues, and let's use the remaining time we have to discuss what I've missed!
