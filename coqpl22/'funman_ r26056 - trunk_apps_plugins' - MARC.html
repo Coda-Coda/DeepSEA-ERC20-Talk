@@ -1,0 +1,98 @@
+
+<!-- saved from url=(0054)https://marc.info/?l=rockbox-cvs&m=127393687608725&w=2 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+ <meta http-equiv="Content-Type" content="text/html ">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>'funman: r26056 - trunk/apps/plugins' - MARC</title>
+ <link rel="stylesheet" type="text/css" href="./&#39;funman_ r26056 - trunk_apps_plugins&#39; - MARC_files/style.css">
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#0000C0" vlink="#800080">
+<pre><b><font size="+1">List:       <a href="https://marc.info/?l=rockbox-cvs&amp;r=1&amp;w=2">rockbox-cvs</a>
+Subject:    funman: r26056 - trunk/apps/plugins
+From:       <a href="https://marc.info/?a=119015837900023&amp;r=1&amp;w=2">mailer () svn ! rockbox ! org</a><!--
+Date:       <a href="https://marc.info/?l=rockbox-cvs&amp;r=1&amp;w=2&amp;b=201005">2010-05-15 15:20:45</a>-->
+Message-ID: <a href="https://marc.info/?i=201005151520.o4FFKjQb015026%20()%20giant%20!%20haxx%20!%20se">201005151520.o4FFKjQb015026 () giant ! haxx ! se</a></font><!--
+[Download RAW <a href="https://marc.info/?l=rockbox-cvs&amp;m=127393687608725&amp;q=mbox">message</a> or <a href="https://marc.info/?l=rockbox-cvs&amp;m=127393687608725&amp;q=raw">body</a>]-->
+</b>
+<strong>Date:</strong> <em>2010-05-15</em> 17:20:45 +0200 (Sat, 15 May 2010)
+<strong>New Revision:</strong> 26056
+
+<strong>Log Message:</strong>
+<em>Fix alarmclock plugin time miscalculation</em>
+
+<strong>Author:</strong> <em>Cl?\195?\169ment Pit-Claudel</em> (CFP)
+Flyspray: FS#11110
+
+<strong>Modified:</strong>
+   trunk/apps/plugins/alarmclock.c
+
+Modified: trunk/apps/plugins/alarmclock.c
+===================================================================
+--- trunk/apps/plugins/alarmclock.c	2010-05-15 15:03:16 UTC (rev 26055)
++++ trunk/apps/plugins/alarmclock.c	2010-05-15 15:20:45 UTC (rev 26056)
+@@ -28,7 +28,8 @@
+                                                   generic_actions};
+ 
+ static int current = 0;
+-static int alarm<a name="-2"></a><a href="https://marc.info/?l=rockbox-cvs&amp;m=127393687608725&amp;w=2#2">[2]</a> = {0, 0}, maxval<a href="https://marc.info/?l=rockbox-cvs&amp;m=127393687608725&amp;w=2#2">[2]</a> = {24, 60};
++static bool tomorrow = false;
++static int alarm<a href="https://marc.info/?l=rockbox-cvs&amp;m=127393687608725&amp;w=2#2">[2]</a> = {0, 0}, maxval<a href="https://marc.info/?l=rockbox-cvs&amp;m=127393687608725&amp;w=2#2">[2]</a> = {24, 60}, prev_tick = 3600 * 24;
+ static bool quit = false, usb = false, waiting = false, done = false;
+ 
+ static inline int get_button(void) {
+@@ -36,9 +37,15 @@
+ }
+ 
+ int rem_seconds(void) {
+-    return (((alarm<a name="-0"></a><a href="https://marc.info/?l=rockbox-cvs&amp;m=127393687608725&amp;w=2#0">[0]</a> - rb-&gt;get_time()-&gt;tm_hour) * 3600)
+-           +((alarm<a name="-1"></a><a href="https://marc.info/?l=rockbox-cvs&amp;m=127393687608725&amp;w=2#1">[1]</a> - rb-&gt;get_time()-&gt;tm_min)  * 60)
+-           -(rb-&gt;get_time()-&gt;tm_sec));
++    int seconds = (((alarm<a href="https://marc.info/?l=rockbox-cvs&amp;m=127393687608725&amp;w=2#0">[0]</a> - rb-&gt;get_time()-&gt;tm_hour) * 3600)
++                  +((alarm<a href="https://marc.info/?l=rockbox-cvs&amp;m=127393687608725&amp;w=2#1">[1]</a> - rb-&gt;get_time()-&gt;tm_min)  * 60)
++                  -(rb-&gt;get_time()-&gt;tm_sec));
++
++    /* The tomorrow flag means that the alarm should ring on the next day */
++    if (seconds &gt; prev_tick) tomorrow = false;
++    prev_tick = seconds;
++
++    return seconds + (tomorrow ? 24 * 3600 : 0);
+ }
+ 
+ void draw_centered_string(struct screen * display, char * string) {
+@@ -87,7 +94,7 @@
+     else if (audio_status &amp; AUDIO_STATUS_PAUSE)
+         return true;
+ 
+-    return false;   
++    return false;
+ }
+ 
+ void play(void) {
+@@ -152,7 +159,7 @@
+ 
+                 case PLA_FIRE: {
+                     if (rem_seconds() &lt; 0)
+-                        alarm<a href="https://marc.info/?l=rockbox-cvs&amp;m=127393687608725&amp;w=2#0">[0]</a> += 24;
++                        tomorrow = true;
+ 
+                     waiting = true;
+                     break;
+
+_______________________________________________
+rockbox-cvs mailing list
+rockbox-cvs@cool.haxx.se
+<a href="http://cool.haxx.se/cgi-bin/mailman/listinfo/rockbox-cvs" rel="nofollow">http://cool.haxx.se/cgi-bin/mailman/listinfo/rockbox-cvs</a>
+<b>[<a href="https://marc.info/?l=rockbox-cvs&amp;m=127393581607746&amp;w=2">prev in list</a>] [<a href="https://marc.info/?l=rockbox-cvs&amp;m=127393858811190&amp;w=2">next in list</a>] [<font color="#c0c0c0">prev in thread</font>] [<font color="#c0c0c0">next in thread</font>] </b>
+</pre>
+  <br><center>
+    <a href="https://marc.info/?q=configure">Configure</a> | 
+
+    <a href="https://marc.info/?q=about">About</a> |
+    <a href="https://marc.info/?q=news">News</a> |
+    <a href="mailto:webguy@marc.info?subject=Add%20a%20list%20to%20MARC">Add&nbsp;a&nbsp;list</a> |
+    Sponsored&nbsp;by&nbsp;<a href="http://www.korelogic.com/">KoreLogic</a>
+</center>
+
+
+</body></html>

@@ -1,0 +1,40 @@
+{
+  "metadata": {
+    "cache_version": "2"
+  },
+  "&coq": {
+    "driver": [
+      "Coq+SerAPI",
+      "8.12.0+0.12.0"
+    ],
+    "metadata": {
+      "sertop_args": []
+    },
+    "chunks": [
+      "Print plus."
+    ],
+    "annotated": [
+      [
+        {
+          "_type": "sentence",
+          "contents": "Print plus.",
+          "messages": [
+            {
+              "_type": "message",
+              "contents": "plus =
+fix plus (n m : nat) {struct n} : nat :=
+  match n with
+  | 0 => m
+  | S p => S (plus p m)
+  end
+     : nat -> nat -> nat
+
+Argument scopes are [nat_scope nat_scope]"
+            }
+          ],
+          "goals": []
+        }
+      ]
+    ]
+  }
+}

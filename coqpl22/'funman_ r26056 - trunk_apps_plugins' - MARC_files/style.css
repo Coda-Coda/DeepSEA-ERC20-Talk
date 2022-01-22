@@ -1,0 +1,21 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.00em;
+}
+
+pre {
+    font-family: Inconsolata, courier, monospace;
+    font-size: 12pt;
+}
+
+b {
+    font-weight: normal;
+    border-left: thin solid black;
+    display: block;
+    padding-left: 0.5em;
+}
+
+em {
+    font-style: normal;
+    background: yellow;
+}

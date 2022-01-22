@@ -39,6 +39,9 @@
 
    .
 
+.. image:: coqpl22/alectryon-excelsus.png
+   :class: logo-left
+
 ================================
  Coq meets literate programming
 ================================
@@ -65,12 +68,15 @@ CoqPL 2022
 .. note::
 
    This talk is about literate programming and Coq tools, but let me take a step back and give you a bit of context.
-   At heart, I'm a programmer, and there's nothing that gives me more joy than building stuff.  And I find that the best motivation for building something is needing something.
+   At heart, I'm a programmer, and there's nothing that gives me more joy than building stuff.  And I find that the best motivation for *building* something is *needing* something.
 
 ----
 
-TODO Synchronicity image from lifehacker
-TODO CoverArt
+.. container:: sidebyside
+
+   .. image:: coqpl22/coversearch.png
+
+   .. image:: coqpl22/synchronicity.png
 
 .. note::
 
@@ -78,7 +84,7 @@ TODO CoverArt
 
 ---
 
-TODO alarm clock / Rockbox
+.. image:: coqpl22/rockbox.svg
 
 .. note::
 
@@ -88,35 +94,61 @@ TODO alarm clock / Rockbox
 
 ---
 
-TODO Rockbox patch
+.. img:: coqpl22/rockbox-bug.png
 
 .. note::
 
    Spoiler, C is hard.  Back in the day I usually didn't go to bed before midnight, so it took me surprisingly long to realize that if you programmed the alarm for the next day it just didn't ring at all.
 
----
-
-TODO end to end picture
-
-.. note::
-
    I'd love to say that this is my origin story for doing formal verification and proofs, but I actually didn't come into contact with the Coq proof assistant until about 3 year later.  Since then I've mostly been a systems and compilers person, but amusingly most of my interactions with my community still revolve around tools, specifically tools for the Coq proof assistant.
 
 ---
 
-TODO: 3 pictures: company-coq, refman, Alectryon.
+.. image:: coqpl22/company-coq-spinner.gif
+
+.. image:: coqpl22/company-refman-tactics.png
 
 .. note::
 
-   Early on it was Company-Coq; then it was Coq's reference manual.  And then it was Alectryon, the subject of this talk.
-
-   Why am I telling you about these old tools, then? Well, you see, the common thread here is that all these tools started from a place of having an itch to scratch — a need to fulfill — and then sharing the result.  It turns out that in most cases, if you have an itch, many many other people have that same each.  What this means is that there are very few itches that are not worth your time to scratch.
-
-   Which is great, because boy are there itches to scratch in the world of proof assistants! You see, if your language has very limited tools, then the only people who use it are those who don't need or care about advanced tools — just the people that are good enough to survive with limited tools.  And guess what: people who don't need tools don't *write* tools.  Rinse, repeat, and you get to where we are now.
+   Early on it was Company-Coq;
 
 ---
 
-TODO XKCD
+.. image:: coqpl22/coq-refman.png
+
+.. note::
+
+   Then it was Coq's reference manual.
+
+---
+
+.. image:: coqpl22/alectryon-excelsus.png
+
+.. note::
+
+   And then it was Alectryon, the subject of this talk.
+
+---
+
+.. image:: coqpl22/other-tools.svg
+
+.. note::
+
+   And in the meantime a bunch of other tools.  Why am I telling you about all these tools, then? Well, you see, the common thread here is that all these tools started from a place of having an itch to scratch — a need to fulfill — and then sharing the result.  It turns out that in most cases, if you have an itch, many many other people have that same each.  What this means is that there are very few itches that are not worth your time to scratch.
+
+   Which is great, because boy, are there itches to scratch in the world of proof assistants!
+
+   It's funny: if your language has very limited tools, then the only people who use it are those who don't need or care about fancy tools.  You end up selecting just the people who are good enough to survive with limited tools.
+
+   Unsurprisingly, it turns that people who don't need tools also don't *write* tools.  Rinse, repeat, and you get to where we are now.
+
+---
+
+.. image:: is_it_worth_the_time.png
+
+.. container:: img-credit
+
+   (XKCD: `<https://xkcd.com/1205/>`__)
 
 .. note::
 
@@ -131,7 +163,7 @@ TODO XKCD
 
 ---
 
-TODO proof presentation paper
+.. img:: coqpl22/proof-presentation.jpg
 
 .. note::
 
@@ -141,7 +173,9 @@ TODO proof presentation paper
 
 ---
 
-TODO outline
+1. Presenting proofs with Alectryon
+2. Demo
+3. Rendering proofs & future work
 
 .. note::
 
@@ -149,7 +183,7 @@ TODO outline
 
 ---
 
-TODO Proof from wiki
+.. image:: groups-proofweb.png
 
 .. note::
 
@@ -159,15 +193,75 @@ TODO Proof from wiki
 
 ---
 
-TODO Isabelle proof
+.. code:: isabelle
+
+   theorem right-inv: x ◦ x⁻¹ = 1
+   proof –
+     have x ◦ x⁻¹ = 1 ◦ (x ◦ x⁻¹)
+       by (rule left-unit [symmetric])
+     also have ... = (1 ◦ x) ◦ x⁻¹
+       by (rule assoc [symmetric])
+     also have 1 = (x⁻¹)⁻¹ ◦ x⁻¹
+       by (rule left-inv [symmetric])
+     also have ... ◦ x = (x⁻¹)⁻¹ ◦ (x⁻¹ ◦ x)
+       by (rule assoc)
+     also have x⁻¹ ◦ x = 1
+       by (rule left-inv)
+     also have ((x⁻¹)⁻¹ ◦ ...) ◦ x⁻¹ =
+                (x⁻¹)⁻¹ ◦ (1 ◦ x⁻¹)
+       by (rule assoc)
+     also have 1 ◦ x⁻¹ = x⁻¹
+       by (rule left-unit)
+     also have (x⁻¹)⁻¹ ◦ ... = 1
+       by (rule left-inv)
+     finally show x ◦ x⁻¹ = 1.
+   qed
 
 .. note::
 
-   The following Isabelle proof does a decent job of capturing this structure.  It's not exactly the same steps, but the interleaving is the same.
+   This Isabelle proof does a decent job of capturing this structure.  It's not exactly the same steps, but it shows the same interleaving of proof rules and proof states.
 
 ---
 
-TODO Coq proof from job talk
+.. coq:: none
+
+   Module Group.
+   Axiom A: Type.
+   Axiom prod: A -> A -> A.
+   Axiom inv: A -> A.
+   Axiom unit: A.
+
+   Notation "1" := unit.
+   Infix "◦" := prod (at level 25).
+   Notation "x ⁻¹" := (inv x) (at level 8, format "x ⁻¹").
+
+   Print Grammar constr.
+
+   Axiom assoc :
+     forall x y z, (x ◦ y) ◦ z = x ◦ (y ◦ z).
+
+   Axiom left_unit :
+     forall x, 1 ◦ x = x.
+
+   Axiom left_inv :
+     forall x, x⁻¹ ◦ x = 1.
+
+   Require Import Setoid.
+
+.. coq:: no-hyps
+
+   Theorem right_inv x: x ◦ x⁻¹ = 1.
+   Proof.
+     rewrite <- (left_unit (_ ◦ _)).
+     rewrite <- assoc.
+     rewrite <- (left_inv x⁻¹) at 1.
+     rewrite (assoc _ x⁻¹).
+     rewrite left_inv.
+     rewrite assoc.
+     rewrite left_unit.
+     rewrite left_inv.
+     reflexivity.
+   Qed.
 
 .. note::
 
@@ -180,33 +274,30 @@ TODO Coq proof from job talk
 
 ---
 
-TODO math proof
+.. image:: coqpl22/social-processes-article.png
 
 .. note::
 
-   These days it seems that some folks in the math community are warming up to interactive theorem proving, but this used to be a topic of contention.
+   There was a fierce debate in the 1980s about exactly what constituted a proof, and whether software proofs and computer-based proofs were as valuable as mathematical proofs.
 
----
-
-TODO quotes from Perlis paper on proofs
-
-.. note::
-
-   People use to fight about this!  Who cared if proofs were right, as long as something was learnt from them! (Read the quotes)
+   People use to fight about this!  To exaggerate: who cares whether proofs are correct, if they are interesting? (Read the quotes)
 
    There's something valid to this argument: there is something joyful and fascinating about understanding things deeply that is wholly disconnected from knowing whether a paper proof covers all the minute details and corner cases correctly.
 
 ---
 
-TODO theorem from Koika
+.. code:: coq
+
+   Theorem compiler_correct:
+     interp program = lift (interp_compiled (compile program)).
 
 .. note::
 
-   Of course, not do be overdone, some of us swing all the way to the other side.  This theorem states correctness for a compiler I wrote not so long ago.  If you're going to use the compiler, does it matter how the 5000 lines Coq proof works?  Its so automated that there are places where even I don't know exactly how it works.  Heck, the best part of my job is when I change the compiler and the proof automation is good enough that it keeps going through.  It tells me the one thing that I care about, which is that the compiler is actually correct.
+   Of course, not do be overdone, some of us swing all the way to the other side.  Here is an example: this theorem states correctness for a compiler I wrote not so long ago.  If you're going to use the compiler, does it matter how the 5000 lines Coq proof works?  Its so automated that there are places where even I don't know exactly how it works.  Heck, the best part of my job is when I change the compiler and the proof automation is good enough that it keeps going through.  It tells me the one thing that I care about, which is that the compiler is actually correct.
 
 ---
 
-TODO CoqIDE gif
+.. image:: coqpl22/coqide.gif
 
 .. note::
 
@@ -219,9 +310,28 @@ TODO CoqIDE gif
 
 ---
 
-.. code:: coq
+.. coq:: no-hyps
 
-   TODO image with manual annots
+   Theorem right_inv2 x: x ◦ x⁻¹ = 1.
+   Proof.
+     rewrite <- (left_unit (_ ◦ _)).
+     (* 1 ◦ (x ◦ x⁻¹) = 1 *)
+     rewrite <- assoc.
+     (* (1 ◦ x) ◦ x⁻¹ = 1 *)
+     rewrite <- (left_inv x⁻¹) at 1.
+     (* (((x⁻¹)⁻¹ ◦ x⁻¹) ◦ x) ◦ x⁻¹ = 1 *)
+     rewrite (assoc _ x⁻¹).
+     (* ((x⁻¹)⁻¹ ◦ (x⁻¹ ◦ x)) ◦ x⁻¹ = 1 *)
+     rewrite left_inv.
+     (* ((x⁻¹)⁻¹ ◦ 1) ◦ x⁻¹ = 1 *)
+     rewrite assoc.
+     (* (x⁻¹)⁻¹ ◦ (1 ◦ x⁻¹) = 1 *)
+     rewrite left_unit.
+     (* (x⁻¹)⁻¹ ◦ x⁻¹ = 1 *)
+     rewrite left_inv.
+     (* 1 = 1 *)
+     reflexivity.
+   Qed.
 
 .. note::
 
@@ -309,9 +419,20 @@ TODO CoqIDE gif
 
 .. container:: alectryon-block
 
-   .. coq:: unfold no-hyps
+   .. coq:: no-hyps
 
-      TODO
+      Theorem right_inv2 x: x ◦ x⁻¹ = 1.
+      Proof.
+        rewrite <- (left_unit (_ ◦ _)).
+        rewrite <- assoc.
+        rewrite <- (left_inv x⁻¹) at 1.
+        rewrite (assoc _ x⁻¹).
+        rewrite left_inv.
+        rewrite assoc.
+        rewrite left_unit.
+        rewrite left_inv.
+        reflexivity.
+      Qed.
 
 .. note::
 
@@ -325,6 +446,7 @@ TODO CoqIDE gif
 
    Everything is web technologies → flexible rendering.
 
+---
 
 .. coq:: unfold
 
@@ -340,7 +462,6 @@ TODO CoqIDE gif
        ring_simplify.
        reflexivity.
    Qed.
-
 
 .. note::
 
@@ -360,7 +481,7 @@ TODO CoqIDE gif
         - (* n ← 0 *)
           reflexivity.
         - (* n ← S _ *)
-          rewrite Mult.mult_plus_distr_l. (* .no-hyps *)
+          rewrite Mult.mult_plus_distr_l.
           rewrite IHn. (* .no-hyps *)
           ring.
       Qed.
@@ -591,7 +712,7 @@ TODO CoqIDE gif
 
 ---
 
-TODO JSON diff showing before / after Nat redefinition
+.. image:: coqpl22/json-diffs.png
 
 .. note::
 
@@ -599,7 +720,7 @@ TODO JSON diff showing before / after Nat redefinition
 
 ---
 
-TODO: Demo on how it works
+Demo!
 
 - Basics: Coq document
 - IDE support
@@ -610,7 +731,7 @@ TODO: Demo on how it works
 - Polyglot documents
 - Diffs on JSON
 
-TODO Check README for things I'd have forgotten.
+---
 
 Taking stock
 ============
@@ -632,17 +753,17 @@ Internal, external, and per-object.
 
 ---
 
-TODO alectryon document picture
+.. image:: coqpl22/koika-tutorial.png
 
 .. note::
 
    The first one is “internal documentation”.  It's what Alectryon was originally developed for: interleaving commentary and code in a way that still lets the reader process everything sequentially.  It's exhaustive: the intent is that it serves as a prose description of what's happening throughout a document.  This is the kind of document that you use when you want your reader to be able to reproduce the same tricks.
 
-   TODO: Example of Koika tutorial
+   This is the mode of operation that I used to write my PhD thesis, this talk, and that people have been using for recitations and lectures.
 
 ---
 
-TODO Hydra-battles
+.. image:: coqpl22/hydras.png
 
 .. note::
 
@@ -654,13 +775,28 @@ TODO Hydra-battles
 
 ---
 
-TODO tactic docs from refman
+.. image:: coqpl22/refman-tactics.png
 
 .. note::
 
    The third one is per-object documentation: this is the programmer's view of the system.  This is not intended to tell a story or pull multiple objects together; instead, it's an exploded view that documents each object one at a time.
 
    We don't have a story about this in Alectryon at the moment, short of documenting objects separately from their definitions.  This is what we do in the reference manual of Coq, in fact: we document each object using reStructuredText constructs.
+
+---
+
+.. code:: rst
+
+   .. quote:: unfold
+
+      .m(Coq.Lists.List).d#app_inj_tail.s(induction).g#2
+
+   .. quote::
+      :from: .m(Coq.Lists.List).d#app_inj_tail.s(induction)
+      :to: .m(Coq.Lists.List).d#app_inj_tail.s(auto.)
+
+
+.. note::
 
    In the long run I'd like to see better integration of docstrings and per-object documentation into Alectryon.  The idea would be that just like the external docs allow you to pull proof fragments and definitions from a file, they should allow you to pull complete objects, including their docstrings, to allow you to weave a story around these objects, like documenting an API.
 
@@ -677,7 +813,12 @@ On rendering proof objects
 
 ---
 
-TODO: Sep logic formula
+.. code:: coq
+
+   (f2 ~> Cell d1 c2 ∗ p1 ~> Queue f1 b2 ∗
+    p2 ~> Queue f2 b2 ∗ b1 ~> Cell x c2 ∗
+    c2 ~> ListSeg b2 L2' ∗ b2 ~> Cell d2 null ∗
+    f1 ~> ListSeg b1 L1)
 
 .. note::
 
@@ -686,21 +827,25 @@ TODO: Sep logic formula
 
 ---
 
-TODO: Sep logic picture
+.. image:: coqpl22/seplogic.svg
 
 .. note::
 
-   Here is the same formula, rendered in a way that I hope we can all agree is more pleasant.
+   Here is the same formula, rendered in a way that I hope we can all agree is more pleasant.  (Talk more about it)
 
 ---
 
-TODO: Step through sep logic proof from Arthur.
-TODO: Demo how this works:
+Demo!
 
-- Coq notation to print easily parsable notation
-- PEG grammar to parse sep logic
-- JS library to cluster the graph and translate it to DOT
-- Graphviz library compiled to JavaScript to generate the rendering
+.. note::
+
+   TODO: Step through sep logic proof from Arthur.
+   TODO: Demo how this works:
+
+   - Coq notation to print easily parsable notation
+   - PEG grammar to parse sep logic
+   - JS library to cluster the graph and translate it to DOT
+   - Graphviz library compiled to JavaScript to generate the rendering
 
 ---
 
