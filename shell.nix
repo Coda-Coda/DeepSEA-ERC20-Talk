@@ -18,8 +18,8 @@ in
 pkgs.mkShell {
   buildInputs = with pkgs; [ 
       # texlive.combined.scheme-full
-      coq_8_12
-      coqPackages_8_12.serapi
+      coq_8_14
+      coqPackages_8_14.serapi
       python-with-my-packages
       pdfpc
       hovercraft
