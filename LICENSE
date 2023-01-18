@@ -2,4 +2,4 @@ The contents of this repository as at the point this LICENSE file was created ar
 
 With regard to changes made by Daniel Britten going forward:
 Similarly to in the link above, the infrastructure will continue to be MIT licensed.
-The new talk itself, shall be licensed CC-BY.
+The new talk itself, shall be licensed CC-BY. The main file for the talk itself is slides.rst, but other newly created content such as diagrams or images that are made for inclusion in the slides are also licensed under CC-BY unless otherwise noted.
