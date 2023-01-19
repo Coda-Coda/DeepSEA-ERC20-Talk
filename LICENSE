@@ -1,5 +1,8 @@
 The contents of this repository as at the point this LICENSE file was created are used under license as described here: https://github.com/cpitclaudel/alectryon-sle2020-talk/issues/1#issuecomment-1382890216
 
 With regard to changes made by Daniel Britten going forward:
+
+The licenses discussed in this file DO NOT APPLY to SUBMODULES. Please see their respective license files for the terms of those repositories.
+
 Similarly to in the link above, the infrastructure will continue to be MIT licensed.
 The new talk itself, shall be licensed CC-BY. The main file for the talk itself is slides.rst, but other newly created content such as diagrams or images that are made for inclusion in the slides are also licensed under CC-BY unless otherwise noted.
