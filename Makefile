@@ -4,9 +4,9 @@
 %.paths.svg: %.svg Makefile
 	inkscape $< --export-text-to-path --export-plain-svg=$@
 
-export COQPATH := $(shell pwd)/coq/
+export COQPATH := $(shell pwd)/contracts/
 
-driver = ./driver.py -t template --mathjax "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" slides.rst
+driver = ./driver.py --template template --mathjax "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" slides.rst
 
 # --skip-help
 serve-%:
@@ -17,8 +17,5 @@ docs: slides.rst Makefile
 	touch $@/.nojekyll
 
 svgs: breakdowns.svg stdlib.svg breakdowns.paths.svg citations.paths.svg rss.paths.svg stdlib.paths.svg udiv.opt.paths.svg
-
-coq: $(wildcard build/*.v)
-	for f in coq/*.v; do coqc -Q coq "" $$f; done
 
 .PHONY: coq
