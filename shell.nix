@@ -1,8 +1,8 @@
 let pkgs = import (
   builtins.fetchTarball {
   name = "nixpkgs-21.05-pinned";
-  url = "https://github.com/nixos/nixpkgs/archive/92f9580a4c369b4b51a7b6a5e77da43720134c9f.tar.gz";
-  sha256 = "0w9bz4f2bmkj4a59n4z279zcgs9clyc40a4ny312rafyaknzghvw";
+  url = "https://github.com/nixos/nixpkgs/archive/61ac4169922ca62d00bfe7f28dae6e1f27fd9c89.tar.gz";
+  sha256 = "05rjb4xx2m2qqp94x39k8mv447njvyqv1zk6kshkg0j9q4hcq8lf";
 }) {}; in
 
 let
