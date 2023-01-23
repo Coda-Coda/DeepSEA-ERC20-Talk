@@ -7,10 +7,10 @@ let pkgs = import (
 
 let
   my-python-packages = with pkgs; python-packages: with python-packages; [
-    alectryon
     pygments
     lxml
     sphinx
+    dominate
   ]; 
   python-with-my-packages = with pkgs; python3.withPackages my-python-packages;
 in

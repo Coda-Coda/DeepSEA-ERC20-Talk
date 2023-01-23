@@ -4,6 +4,7 @@ from os.path import realpath
 import sys
 
 import hovercraft
+sys.path.insert(1, './alectryon')
 import alectryon.docutils
 alectryon.docutils.setup()
 
