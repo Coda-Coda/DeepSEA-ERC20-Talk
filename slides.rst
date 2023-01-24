@@ -35,3 +35,15 @@ DeepSEA
 .. coq::
 
   Check nat. (* .unfold *)
+
+
+----
+
+=============================
+Example: Simple state machine
+=============================
+
+----
+
+.. image:: fsm-diagram-transparent.png
+   :alt: example state machine diagram
