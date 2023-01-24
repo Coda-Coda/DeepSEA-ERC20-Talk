@@ -227,3 +227,7 @@ img {
 .rbt-annot {
     white-space: nowrap;
 }
+
+.present, .alectryon-standalone, .alectryon-windowed, .alectryon-io {
+  overflow-y: scroll;
+}
