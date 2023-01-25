@@ -17,12 +17,43 @@ Provably Correct Smart Contracts using DeepSEA
 Daniel Britten
 ==============
 
-Ethereum Engineering Group 2023
--------------------------------
+Ethereum Engineering Group Meetup 2023
+--------------------------------------
 
 .. note::
 
   It's great to be here...
+
+----
+
+**Formal verification of programs**
+
+
+E.g. theorem-proving for smart contracts correctness.
+
+----
+
+**Quick introduction to theorem-proving in Coq**
+
+Example: Even and odd numbers
+
+----
+
+.. coq:: fold
+
+  Definition Even (n : nat) := exists k, n = 2 * k.
+  Definition Odd  (m : nat) := exists l, m = 2 * l + 1.
+  
+  Lemma EvenToOdd : forall (n : nat), Even n -> Odd (n + 1).
+  Proof.
+    intros.
+    unfold Even in H.
+    destruct H as [k].
+    unfold Odd.
+    exists k.
+    rewrite <- H.
+    reflexivity.
+  Qed.
 
 ----
 
@@ -32,10 +63,106 @@ DeepSEA
 
 ----
 
-.. coq::
+================================
+Modelling a Blockchain using Coq
+================================
 
-  Check nat. (* .unfold *)
+----
 
+**References**
+
+- Slides_ powered by Alectryon_: github.com/cpitclaudel/alectryon
+- The DeepSEA compiler is partly based upon the CompCert_ Verified Compiler.
+
+.. _Slides: https://github.com/Coda-Coda/Eth-Eng-Grp-Talk-2023
+.. _Alectryon: https://github.com/cpitclaudel/alectryon
+.. _CompCert: https://compcert.org/
+
+----
+
+=================
+Additional Slides
+=================
+
+----
+
+=================================================
+Example: a property of a list membership function
+=================================================
+
+----
+
+.. coq:: none
+
+  Require Import Nat.
+  Require Import PeanoNat.
+  Require Import Bool.
+  Require Import List.
+  Import ListNotations.
+
+.. coq:: fold
+
+  Module MyList. (* .none *)
+  Inductive list (A : Type) : Type :=
+  | nil : list A 
+  | cons : A -> list A -> list A.
+  End MyList. (* .none *)
+
+  Fixpoint contains (n:nat) (l:list nat) : bool :=
+    match l with
+    | [] => false
+    | h :: tl => (n =? h) || contains n tl
+  end.
+
+----
+
+.. coq:: fold
+
+  Lemma contains_property :
+    forall n list1, contains n list1 = true
+      -> forall list2, contains n (list1 ++ list2) = true.
+  Proof.
+    intros n.  
+    induction list1.
+    - simpl. intros. discriminate.
+    - intros. simpl in *.
+      apply orb_prop in H.
+      destruct H.
+      + apply orb_true_intro.
+        left. assumption.
+      + apply orb_true_intro.
+        right.
+        eapply IHlist1 in H.
+        eassumption. 
+  Qed.
+
+----
+
+.. coq:: fold
+
+  Lemma contains_correctness : forall n l, contains n l = true <-> In n l.
+  Proof.
+    Print In.
+    split.
+    - induction l as [|l'].
+      + simpl. discriminate.
+      + simpl. intros.
+        apply orb_prop in H.
+        destruct H.
+        * left. rewrite Nat.eqb_eq in H. auto.
+        * right. apply IHl in H. assumption.
+    - induction l as [|l'].
+      + simpl. contradiction.
+      + simpl. intros.
+        destruct H.
+        * apply orb_true_intro.
+          left.
+          subst.
+          apply Nat.eqb_refl.
+        * apply orb_true_intro.
+          right.
+          auto.
+  Qed.
 
 ----
 
@@ -131,9 +258,3 @@ Example: Simple state machine
         * discriminate.
       + discriminate.
   Qed.
-
-----
-
-================================
-Modelling a Blockchain using Coq
-================================

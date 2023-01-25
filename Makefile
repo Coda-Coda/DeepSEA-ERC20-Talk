@@ -18,4 +18,4 @@ docs: slides.rst Makefile
 
 svgs: breakdowns.svg stdlib.svg breakdowns.paths.svg citations.paths.svg rss.paths.svg stdlib.paths.svg udiv.opt.paths.svg
 
-.PHONY: coq
+.PHONY: coq docs
