@@ -5,6 +5,7 @@
 :js-body: alectryon.js
 :slide-numbers: true
 :data-transition-duration: 0.01
+:alectryon/serapi/args: -R /home/daniel/Documents/Code/research/Eth-Eng-Grp-Talk-2023/contracts/result DeepSpec -R /home/daniel/Documents/Code/research/Eth-Eng-Grp-Talk-2023/contracts/Crowdfunding Crowdfunding -R /home/daniel/Documents/Code/research/Eth-Eng-Grp-Talk-2023/contracts/trivial trivial -R /home/daniel/Documents/Code/research/Eth-Eng-Grp-Talk-2023/contracts/proofs SmartContract
 
 .. :auto-console: true
 
@@ -26,14 +27,22 @@ Ethereum Engineering Group Meetup 2023
 
 ----
 
-**Formal verification of programs**
-
-
-E.g. theorem-proving for smart contracts correctness.
+**Overall Goal:**
+*Demonstate a technique for showing the correctness of smart contracts*
 
 ----
 
-**Quick introduction to theorem-proving in Coq**
+**Overview:**
+
+- Theorem-proving example in the proof assistant Coq
+- DeepSEA by example
+- Modelling a blockchain
+- Handling reentrancy
+- A correctness property of a Crowdfunding contract
+
+----
+
+**Introduction to theorem-proving in Coq**
 
 Example: Even and odd numbers
 
@@ -63,9 +72,175 @@ DeepSEA
 
 ----
 
+**Introduction to creating a DeepSEA smart contract**
+
+Example: Trivial contract converting bool to int
+
+----
+
+
+.. code:: ocaml
+
+  object signature trivial = {
+      const boolToInt : bool -> int;
+      boolToIntTracker : bool -> int
+  }
+
+  object Trivial : trivial {
+      let seenTrueYet : bool := false
+
+      let boolToInt b =
+        if b then 1 else 0
+
+      let boolToIntTracker b =
+        if b then
+          begin
+              seenTrueYet := true;
+              1
+          end
+        else 0
+  }
+
+  layer CONTRACT = { o = Trivial }
+
+----
+
+.. code:: bash
+
+  $ dsc trivial.ds bytecode
+  5b60005b60206109205101610920525b61022660006020610920510301525b60006020
+  610920510301516101005260206101002060006020610920510301525b600060006020
+  61092051030151555b60206109205103610920525b60005b9050386300000073600039
+  386000f35b60006000fd5b610940610920527c01000000000000000000000000000000
+  000000000000000000000000006000350480635192f3c01463000000495780631e01e7
+  071463000000965760006000fd5b6004355b60006109205101610920525b8063000000
+  67576300000085565b600190505b60006109205103610920525b805b90506000526020
+  6000f35b60009050630000006c565b60006000fd5b6004355b60206109205101610920
+  525b8063000000b4576300000111565b61022660006020610920510301525b60006020
+  610920510301516101005260206101002060006020610920510301525b600160006020
+  61092051030151555b600190505b60206109205103610920525b805b90506000526020
+  6000f35b6000905063000000f8565b60006000fd
+
+----
+
+`$ dsc trivial.ds abi`
+
+.. code:: json
+
+  [ {"type":"constructor",
+    "name":"constructor",
+    "inputs":[], "outputs":[], "payable":false,
+    "constant":false, "stateMutability":"nonpayable"},
+  {"type":"function",
+    "name":"boolToInt",
+    "inputs":[{"name":"b", "type":"bool"}],
+    "outputs":[{"name":"", "type":"uint256"}],
+    "payable":false,
+    "constant":true,
+    "stateMutability":"view"},
+  {"type":"function",
+    "name":"boolToIntTracker",
+    "inputs":[{"name":"b", "type":"bool"}],
+    "outputs":[{"name":"", "type":"uint256"}],
+    "payable":true,
+    "constant":false,
+    "stateMutability":"payable"}]
+
+.. note::
+
+  Next slide is a reminder of the contract definition.
+
+----
+
+.. code:: ocaml
+
+  object signature trivial = {
+    const boolToInt : bool -> int
+  }
+  
+  object Trivial : trivial {
+      let boolToInt b = if b then 1 else 0
+  }
+  
+  layer CONTRACT  = {
+      o = Trivial
+  }
+
+----
+
+.. coq:: none
+
+  Require Import trivial.DataTypeOps.
+  Require Import trivial.LayerCONTRACT.
+
+  Require Import DeepSpec.lib.Monad.StateMonadOption.
+  Require Import DeepSpec.lib.Monad.RunStateTInv.
+  Require Import lib.ArithInv.
+  Import DeepSpec.lib.Monad.Monad.MonadNotation.
+
+  Require Import Lia.
+  Require Import List.
+  Require Import Bool.
+  Require Import ZArith.
+  Require Import cclib.Maps.
+  Require Import cclib.Integers.
+
+  Require Import DataTypes.
+  Require Import backend.MachineModel.
+
+  Require Import DataTypes.
+  Import ListNotations.
+
+  Require Import core.MemoryModel. 
+  Require Import HyperTypeInst.
+
+  Require Import Maps.
+  Import Maps.Int256Tree_Properties.
+  Import Maps.Int256Tree.
+
+  Require Import trivial.ContractModel.
+  Import trivial.ContractModel.ContractModel.
+
+  Open Scope Z.
+
+  Section Proof.
+
+.. coq:: unfold
+
+  Print Trivial_boolToInt_opt.
+
+----
+
+.. coq:: unfold
+
+  Print Trivial_boolToIntTracker_opt.
+
+.. coq:: none
+
+  End Proof.
+  Open Scope nat.
+
+----
+
+**Refinement and the Lem EVM model**
+
+----
+
 ================================
 Modelling a Blockchain using Coq
 ================================
+
+----
+
+==========
+Reentrancy
+==========
+
+----
+
+===================================
+A Crowdfunding Correctness Property
+===================================
 
 ----
 
@@ -202,14 +377,14 @@ Example: Simple state machine
   Local Obligation Tactic := try discriminate. (* .none *)
   Program Definition step (s : State) (t : Transition s) :=
     match t with
-    | advance _ _ =>
+    | advance _ =>
       match s with
       | initial => middle
       | middle => final
       | extra => middle
       | final => _
       end
-    | sidetrack _ _ =>
+    | sidetrack _ =>
       match s with
       | initial => extra
       | _ => _
