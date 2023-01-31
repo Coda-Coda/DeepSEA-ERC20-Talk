@@ -5,7 +5,9 @@ With regard to changes made by Daniel Britten going forward:
 The licenses discussed in this file DO NOT APPLY to SUBMODULES. Please see their respective license files for the terms of those repositories.
 
 Similarly to in the link above, the infrastructure will continue to be MIT licensed.
-The new talk itself, shall be licensed CC-BY (except where noted). The main file for the talk itself is slides.rst, but other newly created content such as diagrams or images that are made for inclusion in the slides are also licensed under CC-BY unless otherwise noted.
-Note: though this may not be necessary (the licensing situation appears potentially unclear), for simplicity for now the snippets of the talk that could not be produced without the DeepSEA codebase are licensed under the CompCert-Licence (see https://github.com/Coda-Coda/deepsea-1/blob/main/CompCert-LICENSE.txt). In particular that license only permits use for educational, research or evaluation purposes, and not for commercial use. For the actual licence, see the link provided just previously.
 
-Please get in touch with me via raising an issue if you need different licensing terms and I will do my best to accommodate.
+For simplicity, the talk itself (in particular slides.rst) will not be licensed for re-use.
+If you would like to re-use the content of the talk (which is primarily in slides.rst, but not exclusively), please feel free to get in touch via raising a GitHub issue and I'd be happy to respond and try work something out.
+
+If it is indeed necessary (the licensing situation seems possibly unclear), then we note that the contents of the talk that are inseparable from the DeepSEA codebase are used under the  CompCert-Licence (see https://github.com/Coda-Coda/deepsea-1/blob/main/CompCert-LICENSE.txt). In particular that license only permits use for educational, research or evaluation purposes, and not for commercial use. For the actual licence, see the link provided just previously.
+In any case, I'd like to express my thanks to both the DeepSEA developers and the CompCert developers for their contributions to those two projects.
