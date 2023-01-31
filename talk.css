@@ -111,10 +111,6 @@ img {
   grid-auto-flow: column;
 }
 
-img {
-  width: 1800px;
-}
-
 .img-m {
   width: 1200px;
 }
