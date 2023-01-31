@@ -254,12 +254,6 @@ In any case, make an exception for comments:
     z-index: 1; /* Default to an index lower than that used by :hover */
 }
 
-@media (any-hover: hover) { /* See note above about this @media query */
-    .alectryon-io .alectryon-sentence:hover .alectryon-output:not(:hover) {
-        display: block;
-    }
-}
-
 .alectryon-io .alectryon-sentence.alectryon-target .alectryon-output {
     display: block;
 }
