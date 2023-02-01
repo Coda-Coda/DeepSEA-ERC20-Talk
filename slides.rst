@@ -24,6 +24,8 @@ Ethereum Engineering Group Meetup 2023
 .. note::
 
   It's great to be here...
+  
+  The talks are from 40 to 90 minutes long, including question time.
 
 ----
 
@@ -38,8 +40,7 @@ Ethereum Engineering Group Meetup 2023
 - DeepSEA example: compilation
 - DeepSEA example: proof
 - Correctness property of a Crowdfunding contract
-- Paper overview: Reentrancy
-- Paper overview: Modelling a blockchain
+- Paper overviews
 
 ----
 
@@ -238,6 +239,8 @@ Example: Trivial contract converting bool to int
   Context {memModelOps : MemoryModelOps mem}.
 
 
+`$ dsc trivial.ds coq ...`
+
 .. code:: coq
 
   if f then ret 1 else ret 0
@@ -250,8 +253,10 @@ Example: Trivial contract converting bool to int
 
 ----
 
-.. code:: coq
+`$ dsc trivial.ds coq ...`
 
+.. code:: coq
+  
   if f then
     MonadState.modify (update_Trivial_seenTrueYet true) ;;
     ret 1
@@ -302,7 +307,7 @@ Main goal:
       - (* "->" result is 1 ∴ input is true. *) (* .all -.h#* .h#H .h#H0 *)
         inv_runStateT_branching. (* .all -.h#* .h#Heqb .h#H0 .h#H1 .h#H2 *)
         + (* Go down true branch of if statement. *) (* .all -.h#* .h#Heqb .h#H0 .h#H1 .h#H2 *)
-          subst. (* .all -.h#* .h#H1 *) reflexivity.
+          reflexivity.
         + (* Go down false branch of if statement, gives a contradiction. *) (* .all -.h#* .h#Heqb .h#H0 .h#H1 .h#H2 *)
           subst. (* .all -.h#* .h#H1 *) discriminate.
       - (* "<-" input is true ∴ result is 1. *)  (* .all -.h#* .h#H .h#H0 *)
@@ -365,7 +370,7 @@ Main goal:
       - (* "->" result is 1 ∴ input is true. *) (* .all -.h#* .h#H .h#H0 *)
         inv_runStateT_branching. (* .all -.h#* .h#Heqb .h#H0 .h#H1 .h#H3 .h#H4 *)
         + (* Go down true branch of if statement. *) (* .all -.h#* .h#Heqb .h#H0 .h#H1 .h#H3 .h#H4 *)
-          subst. (* .all -.h#* .h#H1 *) reflexivity.
+          reflexivity.
         + (* Go down false branch of if statement, gives a contradiction. *) (* .all -.h#* .h#Heqb .h#H0 .h#H1 .h#H2 *)
           subst. (* .all -.h#* .h#H1 *) discriminate.
       - (* "<-" input is true ∴ result is 1. *)  (* .all -.h#* .h#H .h#H0 *)
@@ -757,15 +762,15 @@ A Crowdfunding Correctness Property
 .. coq:: fold
 
   Definition since_as_long (Property1 : BlockchainState -> Prop)
-      (Property2 : BlockchainState -> Prop) (Property3 : Step -> Prop) :=
+      (Property2 : BlockchainState -> Prop) (PropertyAboutAction : Step -> Prop) :=
     forall actions start finish helper,
       ReachableVia start finish helper actions ->
       Property1 start
-      -> (forall act, List.In act actions -> Property3 act)
+      -> (forall act, List.In act actions -> PropertyAboutAction act)
       -> Property2 finish.
 
-  Notation "Property2 `since` Property1 `as-long-as` Property3" :=
-    (since_as_long Property1 Property2 Property3) (at level 1).
+  Notation "Property2 `since` Property1 `as-long-as` PropertyAboutAction" :=
+    (since_as_long Property1 Property2 PropertyAboutAction) (at level 1).
 
 .. coq:: none
 
@@ -942,6 +947,11 @@ Paper overviews
 
 ----
 
+.. image:: amm-paper.png
+  :target: https://drops.dagstuhl.de/opus/volltexte/2021/15425/pdf/OASIcs-FMBC-2021-1.pdf
+
+----
+
 .. image:: deepsea-paper.png
   :target: https://dl.acm.org/doi/pdf/10.1145/3360562
 
@@ -949,16 +959,31 @@ Paper overviews
 
 **References**
 
-- Slides_ powered by Alectryon_: github.com/cpitclaudel/alectryon
-- The DeepSEA compiler is partly based upon the CompCert_ Verified Compiler.
-- My papers: https://academic.danielb.space
+- Slides_ powered by Alectryon_: https://github.com/cpitclaudel/alectryon
+- The DeepSEA compiler is partly based upon the CompCert_ Verified Compiler
+- My papers: https://academic.danielb.space (Get in touch here)
 - C DeepSEA paper: https://dl.acm.org/doi/pdf/10.1145/3360562
+- Verified Price Oracles paper: https://doi.org/10.4230/OASIcs.FMBC.2021.1
+
+- GitHub links:
+    - DeepSEA_
+    - My DeepSEA fork_ 
+    - The Crowdfunding_ contract (as for the FTSCS paper)
 
 .. _Slides: https://github.com/Coda-Coda/Eth-Eng-Grp-Talk-2023
 .. _Alectryon: https://github.com/cpitclaudel/alectryon
 .. _CompCert: https://compcert.org/
+.. _DeepSEA: https://github.com/ShentuChain/deepsea
+.. _fork: https://github.com/Coda-Coda/deepsea-1
+.. _Crowdfunding: https://github.com/Coda-Coda/Crowdfunding/tree/FTSCS-2022
 
-Thank you!
+----
+
+**Thank you!**
+
+*I would like to thank my supervisor Professor Steve Reeves at the University of Waikato and Vilhelm Sjöberg at CertiK for their valuable insights and input.*
+
+*I would also like to thank Associate Professor Jing Sun and the University of Auckland for kindly hosting me during this research.*
 
 ----
 
