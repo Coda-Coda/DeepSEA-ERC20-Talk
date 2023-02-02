@@ -970,7 +970,7 @@ Paper overviews
     - My DeepSEA fork_ 
     - The Crowdfunding_ contract (as for the FTSCS paper)
 
-.. _Slides: https://github.com/Coda-Coda/Eth-Eng-Grp-Talk-2023
+.. _Slides: https://github.com/Coda-Coda/Alectryon-slides/tree/eth-eng-grp-talk-2023
 .. _Alectryon: https://github.com/cpitclaudel/alectryon
 .. _CompCert: https://compcert.org/
 .. _DeepSEA: https://github.com/ShentuChain/deepsea
