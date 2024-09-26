@@ -448,7 +448,9 @@ Proofs
   Import ERC20WrappedEth.ContractModel.ContractModel.
 
   Open Scope Z.
-
+  
+  Ltac abbreviated := idtac.
+  
   Delimit Scope int256_scope with int256.
   Infix "+" := Int256.add : int256_scope.
   Infix "-" := Int256.sub : int256_scope.
@@ -1641,13 +1643,234 @@ Proofs
 
 **Safety Property: Sufficient Funds Safe**
 
-.. coq:: fold
+.. coq:: in
 
   Definition balance_backed state :=
     sum (ERC20WrappedEth_wrapped (contract_state state))
         <= (balance state contract_address).
-
+  
   Theorem sufficient_funds_safe : Safe balance_backed.
+  Proof. (* .in *)
+  unfold Safe. (* .none *) intros. (* .none *)
+  pose proof (total_supply_correct state s l H). (* .none *)
+  unfold total_supply_tracks_correctly in H0. (* .none *)
+  unfold balance_backed. (* .none *)
+  destruct H0. (* .none *)
+  rewrite H0. (* .none *)
+  clear H0 H1. (* .none *)
+  induction H.
+  - simpl. (* .out -.h#* .h#snapshot_balances_valid_prf *)
+    (** In the base case, we rely upon the assumption made that the snapshot balances are in a valid range as a part of a snapshot approach described in %\Cref{sec:snapshot}%. *)
+    apply snapshot_balances_valid_prf.
+  - abbreviated.
+    Hlinks. (* .none *)
+    destruct prev; autounfold in *; simpl in *. (* .none *)
+    destruct Step_action0; simpl in *. (* .none *)
+    + Transparent ERC20WrappedEth_totalSupply_opt.
+      abbreviated.
+      unfold ERC20WrappedEth_totalSupply_opt in case_totalSupply_prf. (* .none *)
+      ds_inv; subst; simpl in *. (* .none *) 
+      inversion case_totalSupply_prf. (* .none *)
+      unfold new_balance_after_contract_call. (* .none *)
+      pose proof (NoLeftoverOutgoings H). (* .none *)
+      rewrite H0. (* .none *)
+      unfold current_balances, update_balances. (* .none *)
+      rewrite Int256.eq_true. (* .none *)
+      destruct((caller context) =? contract_address)%int256 eqn:Case. (* .none *)
+      * (* .none *) apply IHReachableFromBy. (* .none *)
+      * (* .none *) rewrite Int256.eq_sym. (* .none *)
+        rewrite Case. (* .none *)
+        lia. (* .none *)
+    + Transparent ERC20WrappedEth_balanceOf_opt.
+      abbreviated.
+      unfold ERC20WrappedEth_balanceOf_opt in case_balanceOf_prf. (* .none *)
+      ds_inv; subst; simpl in *. (* .none *) 
+      inversion case_balanceOf_prf. (* .none *)
+      unfold new_balance_after_contract_call. (* .none *)
+      pose proof (NoLeftoverOutgoings H). (* .none *)
+      rewrite H0. (* .none *)
+      unfold current_balances, update_balances. (* .none *)
+      rewrite Int256.eq_true. (* .none *)
+      destruct((caller context) =? contract_address)%int256 eqn:Case. (* .none *)
+      * (* .none *) apply IHReachableFromBy. (* .none *)
+      * (* .none *) rewrite Int256.eq_sym. (* .none *)
+        rewrite Case. (* .none *)
+        lia. (* .none *)
+    + Transparent ERC20WrappedEth_transfer_opt.
+      abbreviated.
+      unfold ERC20WrappedEth_transfer_opt in case_transfer_prf. (* .none *)
+      pose proof (NoLeftoverOutgoings H). (* .none *)
+      clear HL H. (* .none *)
+      ds_inv; subst; simpl in *. (* .none *) 
+      unfold new_balance_after_contract_call. (* .none *)
+      simpl. (* .none *)
+      rewrite H0. (* .none *)
+      unfold current_balances, update_balances. (* .none *)
+      rewrite Int256.eq_true. (* .none *)
+      destruct((caller context) =? contract_address)%int256 eqn:Case. (* .none *)
+      * (* .none *) apply IHReachableFromBy. (* .none *)
+      * (* .none *) rewrite Int256.eq_sym. (* .none *)
+        rewrite Case. (* .none *)
+        lia. (* .none *)
+    + Transparent ERC20WrappedEth_transferFrom_opt.
+      abbreviated.
+      unfold ERC20WrappedEth_transferFrom_opt in case_transferFrom_prf. (* .none *)
+      pose proof (NoLeftoverOutgoings H). (* .none *)
+      clear HL H. (* .none *)
+      ds_inv; subst; simpl in *. (* .none *) 
+      unfold new_balance_after_contract_call. (* .none *)
+      simpl. (* .none *)
+      rewrite H0. (* .none *)
+      unfold current_balances, update_balances. (* .none *)
+      rewrite Int256.eq_true. (* .none *)
+      destruct((caller context) =? contract_address)%int256 eqn:Case. (* .none *)
+      * (* .none *) apply IHReachableFromBy. (* .none *)
+      * (* .none *) rewrite Int256.eq_sym. (* .none *)
+        rewrite Case. (* .none *)
+        lia. (* .none *)
+    + Transparent ERC20WrappedEth_allowance_opt.
+      abbreviated.
+      unfold ERC20WrappedEth_allowance_opt in case_allowance_prf. (* .none *)
+      pose proof (NoLeftoverOutgoings H). (* .none *)
+      clear HL H. (* .none *)
+      ds_inv; subst; simpl in *. (* .none *) 
+      unfold new_balance_after_contract_call. (* .none *)
+      simpl. (* .none *)
+      rewrite H0. (* .none *)
+      unfold current_balances, update_balances. (* .none *)
+      rewrite Int256.eq_true. (* .none *)
+      destruct((caller context) =? contract_address)%int256 eqn:Case. (* .none *)
+      * (* .none *) apply IHReachableFromBy. (* .none *)
+      * (* .none *) rewrite Int256.eq_sym. (* .none *)
+        rewrite Case. (* .none *)
+        lia. (* .none *)
+    + Transparent ERC20WrappedEth_approve_opt.
+      abbreviated.
+      unfold ERC20WrappedEth_approve_opt in case_approve_prf. (* .none *)
+      pose proof (NoLeftoverOutgoings H). (* .none *)
+      clear HL H. (* .none *)
+      ds_inv; subst; simpl in *. (* .none *) 
+      unfold new_balance_after_contract_call. (* .none *)
+      simpl. (* .none *)
+      rewrite H0. (* .none *)
+      unfold current_balances, update_balances. (* .none *)
+      rewrite Int256.eq_true. (* .none *)
+      destruct((caller context) =? contract_address)%int256 eqn:Case. (* .none *)
+      * (* .none *) apply IHReachableFromBy. (* .none *)
+      * (* .none *) rewrite Int256.eq_sym. (* .none *)
+        rewrite Case. (* .none *)
+        lia. (* .none *)
+    + Transparent ERC20WrappedEth_approveSafely_opt.
+      abbreviated.
+      unfold ERC20WrappedEth_approveSafely_opt in case_approveSafely_prf. (* .none *)
+      pose proof (NoLeftoverOutgoings H). (* .none *)
+      clear HL H. (* .none *)
+      ds_inv; subst; simpl in *. (* .none *) 
+      * (* .none *) unfold new_balance_after_contract_call. (* .none *)
+        simpl. (* .none *)
+        rewrite H0. (* .none *)
+        unfold current_balances, update_balances. (* .none *)
+        rewrite Int256.eq_true. (* .none *)
+        destruct((caller context) =? contract_address)%int256 eqn:Case. (* .none *)
+        -- (* .none *) apply IHReachableFromBy. (* .none *)
+        -- (* .none *) rewrite Int256.eq_sym. (* .none *)
+          rewrite Case. (* .none *)
+          lia. (* .none *)
+      * (* .none *) unfold new_balance_after_contract_call. (* .none *) simpl. (* .none *) rewrite H0. (* .none *)
+        unfold current_balances, update_balances. (* .none *)
+        rewrite Int256.eq_true. (* .none *)
+        destruct((caller context) =? contract_address)%int256 eqn:Case. (* .none *)
+        -- (* .none *) apply IHReachableFromBy. (* .none *)
+        -- (* .none *) rewrite Int256.eq_sym. (* .none *)
+          rewrite Case. (* .none *)
+          lia. (* .none *)
+    + Transparent ERC20WrappedEth_mint_opt.
+      abbreviated.
+      unfold ERC20WrappedEth_mint_opt in case_mint_prf. (* .none *)
+      pose proof (NoLeftoverOutgoings H). (* .none *)
+      clear HL H. (* .none *)
+      ds_inv; subst; simpl in *. (* .none *) 
+      unfold new_balance_after_contract_call. (* .none *)
+      simpl. (* .none *)
+      rewrite H0. (* .none *)
+      unfold current_balances, update_balances. (* .none *)
+      rewrite Int256.eq_true. (* .none *)
+      apply (f_equal negb) in H2. (* .none *) rewrite negb_involutive in H2. (* .none *)
+      simpl in H2. (* .none *)
+      rewrite H2. (* .none *)
+      rewrite Int256.eq_sym in H2. (* .none *)
+      rewrite Z.gtb_lt in H6. (* .none *)
+      rewrite H2. (* .out -.h#* .h#IHReachableFromBy .h#H6 *)
+      clear -IHReachableFromBy. (* .none *)
+      (** Here we see that in the successful case of minting a wrapped ether token, the inequality increases on both sides by the callvalue. As a result the [balance_backed] property is maintained. *)
+      lia.
+    + Transparent ERC20WrappedEth_burn_opt.
+      abbreviated.
+      unfold ERC20WrappedEth_burn_opt in case_burn_prf. (* .none *)
+      pose proof (NoLeftoverOutgoings H). (* .none *)
+      clear HL H. (* .none *)
+      ds_inv; subst; simpl in *. (* .none *) 
+      * (* .none *) 
+        unfold new_balance_after_contract_call. (* .none *)
+        simpl. (* .none *)
+        unfold current_balances, update_balances. (* .none *)
+        rewrite Int256.eq_true. (* .none *)
+        apply (f_equal negb) in H6. (* .none *) rewrite negb_involutive in H6. (* .none *)
+        simpl in H6. (* .none *)
+        rewrite H6. (* .none *)
+        rewrite Int256.eq_sym in H6. (* .none *)
+        rewrite Z.geb_le in H2. (* .none *)
+        rewrite Z.eqb_eq in H10. (* .none *) rewrite H10. (* .none *)
+        rewrite Z.add_0_r, Z.sub_0_r. (* .none *)
+        rewrite Z.geb_le in H16. (* .none *)
+        rewrite H6. (* .out -.h#* .h#IHReachableFromBy .h#H2 *)
+        clear -IHReachableFromBy H2. (* .none *)
+        (** For the %\coq{burn}% case, this time the inequality is reduced on the left and right by the argument %\coq{_value}% and so the property is maintained. *)
+        lia.
+      * exfalso. (* .out -.h#* .h#Heqb *)
+      (** We also have the scenario where the transfer fails, which we assume not to be the case as part of the successful-calls approach discussed in %\Cref{sec:successful-calls}%. This case is dismissed by the [inversion] tactic and the contradictory knowledge that the %\coq{transferEth}% function returned a zero when it was assumed to return a one in order for the function to succeed.
+      The aim of this theorem is to show that in all reachable states, the [balance_backed] property is maintained. It would be a separate proof goal to show that a user can successfully withdraw funds and the proof would be similar to the [can_claim_back] theorem discussed for the crowdfunding smart contract in %\Cref{sec:can-claim-back-crowdfunding}%. *)
+      inversion Heqb.
+  (** Next is the case for external balance transfers, which can only increase the balance, so the property continues to hold. *)
+    + unfold current_balances, update_balances.
+      abbreviated.
+      destruct prf. (* .none *)
+      clear H HL. (* .none *)
+      apply Int256.eq_false in n. (* .none *)
+      rewrite Int256.eq_sym in n. (* .none *)
+      rewrite n. (* .none *)
+      rewrite HS in *. (* .none *)
+      destruct(contract_address =? recipient)%int256 eqn:Case. (* .none *)
+      * (* .none *) destruct(sender =? recipient)%int256 eqn:SCase; try lia. (* .none *)
+        destruct a. (* .none *)
+        apply Int256eq_true in Case. (* .none *)
+        rewrite <- Case. (* .out -.h#* .h#IHReachableFromBy .h#H *)
+        clear -IHReachableFromBy H. (* .none *)
+        (** Here we see the case where some [amount] of ether has been transferred to the smart contract, increasing its balance, but the property is maintained. *)
+        lia.
+      * (* .none *) destruct(sender =? recipient)%int256 eqn:SCase; try lia. (* .none *)
+  (** Finally, we have the two cases for time passing and for reverting. Neither affect balances or the %\coq{wrapped}% mapping so they follow from the inductive hypothesis. *)
+    + rewrite HS in *. apply IHReachableFromBy.
+    + rewrite HS in *. apply IHReachableFromBy.  
+  Qed.
+
+.. coq:: none
+  
+  Opaque ERC20WrappedEth_totalSupply_opt.
+  Opaque ERC20WrappedEth_balanceOf_opt.
+  Opaque ERC20WrappedEth_transfer_opt.
+  Opaque ERC20WrappedEth_transferFrom_opt.
+  Opaque ERC20WrappedEth_approve_opt.
+  Opaque ERC20WrappedEth_approveSafely_opt.
+  Opaque ERC20WrappedEth_allowance_opt.
+  Opaque ERC20WrappedEth_mint_opt.
+  Opaque ERC20WrappedEth_burn_opt.
+
+**Full proof**
+
+.. coq:: fold
+
+  Theorem sufficient_funds_safe' : Safe balance_backed.
   Proof.
   unfold Safe. intros.
   pose proof (total_supply_correct state s l H).

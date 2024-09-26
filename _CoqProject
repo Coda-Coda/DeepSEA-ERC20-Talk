@@ -1,4 +1,5 @@
 -R /run/media/daniel/WORK/DeepSEA-ERC20-Talk/PhD-Thesis-Code-Artefact/DeepSEA DeepSpec
 -R /run/media/daniel/WORK/DeepSEA-ERC20-Talk/PhD-Thesis-Code-Artefact/Chapter-5-Case-Study-Crowdfunding/Crowdfunding Crowdfunding 
+-R /run/media/daniel/WORK/DeepSEA-ERC20-Talk/PhD-Thesis-Code-Artefact/Chapter-6-Case-Study-ERC-20-Wrapped-Ether-Token/ERC20WrappedEth ERC20WrappedEth
 -R /run/media/daniel/WORK/DeepSEA-ERC20-Talk/PhD-Thesis-Code-Artefact/Trivial/trivial trivial
 -R /run/media/daniel/WORK/DeepSEA-ERC20-Talk/PhD-Thesis-Code-Artefact/Chapter-5-Case-Study-Crowdfunding/proofs SmartContract
