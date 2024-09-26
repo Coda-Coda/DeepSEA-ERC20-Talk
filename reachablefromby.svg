@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="734.58887"
+   height="173.86589"
+   version="1.1"
+   id="svg1033"
+   sodipodi:docname="reachablefromby.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1037">
+    <rect
+       x="346.35052"
+       y="202.76396"
+       width="243.04735"
+       height="31.400084"
+       id="rect2654" />
+  </defs>
+  <sodipodi:namedview
+     id="namedview1035"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="1.2007"
+     inkscape:cx="362.28866"
+     inkscape:cy="74.123428"
+     inkscape:window-width="1499"
+     inkscape:window-height="749"
+     inkscape:window-x="50"
+     inkscape:window-y="294"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg1033"
+     inkscape:pageshadow="2"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <rect
+     style="fill:#00ffff;stroke-width:1.64369"
+     id="rect2345"
+     width="646.96753"
+     height="173.86589"
+     x="1.777065"
+     y="0"
+     rx="165.76764"
+     ry="68.814667" />
+  <text
+     xml:space="preserve"
+     id="text2652"
+     style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';white-space:pre;shape-inside:url(#rect2654);display:inline;fill:#280b0b"
+     transform="matrix(1.4403763,0,0,1.4342463,-263.79276,-291.37693)"
+     inkscape:label="text2652"><tspan
+       x="346.34961"
+       y="226.35745"
+       id="tspan13705">steps</tspan></text>
+  <ellipse
+     stroke="#000000"
+     stroke-width="1.43731"
+     fill="none"
+     cx="43.929947"
+     cy="87.875366"
+     id="ellipse1005"
+     rx="43.211292"
+     ry="43.02739" />
+  <text
+     x="14.495387"
+     y="94.926231"
+     font-family="'Times New Roman'"
+     font-size="28.7461px"
+     id="text1007"
+     transform="scale(1.0021347,0.99786984)"
+     style="stroke-width:1.43731"><tspan
+       sodipodi:role="line"
+       id="tspan52"
+       x="14.495387"
+       y="94.926231">from</tspan></text>
+  <ellipse
+     stroke="#000000"
+     stroke-width="1.43731"
+     fill="none"
+     cx="690.65894"
+     cy="87.875366"
+     id="ellipse1009"
+     rx="43.211292"
+     ry="43.02739" />
+  <text
+     x="674.73645"
+     y="95.689598"
+     font-family="'Times New Roman'"
+     font-size="28.7461px"
+     id="text1011"
+     transform="scale(1.0021347,0.99786984)"
+     style="stroke-width:1.43731">to</text>
+  <text
+     x="436.98932"
+     y="95.326225"
+     font-family="'Times New Roman'"
+     font-size="28.7461px"
+     id="text1011-5"
+     transform="scale(1.0021347,0.99786984)"
+     style="stroke-width:1.43731">. . .</text>
+  <ellipse
+     stroke="#000000"
+     stroke-width="1.43731"
+     fill="none"
+     cx="690.65894"
+     cy="87.875366"
+     id="ellipse1013"
+     rx="34.569031"
+     ry="34.421913" />
+  <ellipse
+     stroke="#000000"
+     stroke-width="1.43731"
+     fill="none"
+     cx="199.49059"
+     cy="87.875366"
+     id="ellipse1015"
+     rx="43.211292"
+     ry="43.02739" />
+  <ellipse
+     stroke="#000000"
+     stroke-width="1.43731"
+     fill="none"
+     cx="347.84937"
+     cy="87.875366"
+     id="ellipse1017"
+     rx="43.211292"
+     ry="43.02739" />
+  <ellipse
+     stroke="#000000"
+     stroke-width="1.43731"
+     fill="none"
+     cx="565.34619"
+     cy="87.875366"
+     id="ellipse1019"
+     rx="43.211292"
+     ry="43.02739" />
+  <polygon
+     stroke="#000000"
+     stroke-width="1"
+     points="219.5,297.5 267.5,297.5 "
+     id="polygon1021"
+     transform="matrix(1.4403763,0,0,1.4342463,-229.02136,-338.81288)" />
+  <polygon
+     fill="#000000"
+     stroke-width="1"
+     points="267.5,297.5 259.5,292.5 259.5,302.5 "
+     id="polygon1023"
+     transform="matrix(1.4403763,0,0,1.4342463,-229.02136,-338.81288)" />
+  <polygon
+     stroke="#000000"
+     stroke-width="1"
+     points="327.5,297.5 370.5,297.5 "
+     id="polygon1025"
+     transform="matrix(1.4403763,0,0,1.4342463,-229.02136,-338.81288)" />
+  <polygon
+     fill="#000000"
+     stroke-width="1"
+     points="370.5,297.5 362.5,292.5 362.5,302.5 "
+     id="polygon1027"
+     transform="matrix(1.4403763,0,0,1.4342463,-229.02136,-338.81288)" />
+  <polygon
+     stroke="#000000"
+     stroke-width="1"
+     points="370.5,297.5 327.5,297.5 "
+     id="polygon1025-3"
+     transform="matrix(0.58109558,0,0,1.4342463,200.04252,-338.24275)" />
+  <polygon
+     fill="#000000"
+     stroke-width="1"
+     points="362.5,292.5 362.5,302.5 370.5,297.5 "
+     id="polygon1027-6"
+     transform="matrix(1.4403763,0,0,1.4342463,-107.58465,-339.4571)" />
+  <polygon
+     stroke="#000000"
+     stroke-width="1"
+     points="327.5,297.5 370.5,297.5 "
+     id="polygon1025-3-7"
+     transform="matrix(0.4083158,0,0,1.4342463,357.82017,-339.41627)" />
+  <polygon
+     fill="#000000"
+     stroke-width="1"
+     points="370.5,297.5 362.5,292.5 362.5,302.5 "
+     id="polygon1027-6-5"
+     transform="matrix(1.4403763,0,0,1.4342463,-12.228924,-339.4571)" />
+  <polygon
+     stroke="#000000"
+     stroke-width="1"
+     points="581.5,297.5 608.5,297.5 "
+     id="polygon1029"
+     transform="matrix(1.4403763,0,0,1.4342463,-229.02136,-338.81288)" />
+  <polygon
+     fill="#000000"
+     stroke-width="1"
+     points="608.5,297.5 600.5,292.5 600.5,302.5 "
+     id="polygon1031"
+     transform="matrix(1.4403763,0,0,1.4342463,-229.02136,-338.81288)" />
+</svg>

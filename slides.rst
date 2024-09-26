@@ -294,6 +294,8 @@ Goal:
 
 **ERC-20 Wrapped-ETH Implementation**
 
+.. image:: state-machine-diagram-ERC20WrappedEth.png
+
 .. code:: ocaml
 
   event
@@ -1189,6 +1191,8 @@ Proofs
 ----
 
 **Property: Preservation of Wrapped-ETH records**
+
+.. image:: reachablefromby.svg
 
 .. coq:: in
 
