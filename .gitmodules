@@ -4,3 +4,6 @@
 [submodule "alectryon"]
 	path = alectryon
 	url = https://github.com/Coda-Coda/alectryon.git
+[submodule "PhD-Thesis-Code-Artefact"]
+	path = PhD-Thesis-Code-Artefact
+	url = https://github.com/Coda-Coda/PhD-Thesis-Code-Artefact.git
