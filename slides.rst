@@ -1803,7 +1803,7 @@ Proofs
       rewrite Z.gtb_lt in H6. (* .none *)
       rewrite H2. (* .out .unfold -.h#* .h#IHReachableFromBy .h#H6 *)
       clear -IHReachableFromBy. (* .none *)
-      
+      (** Here we see that in the successful case of minting a wrapped ether token, the inequality increases on both sides by the callvalue. As a result the [balance_backed] property is maintained. *)
       lia.
     + Transparent ERC20WrappedEth_burn_opt.
       abbreviated.
@@ -1826,13 +1826,13 @@ Proofs
         rewrite Z.geb_le in H16. (* .none *)
         rewrite H6. (* .out .unfold -.h#* .h#IHReachableFromBy .h#H2 *)
         clear -IHReachableFromBy H2. (* .none *)
-        
+        (** For the %\coq{burn}% case, this time the inequality is reduced on the left and right by the argument %\coq{_value}% and so the property is maintained. *)
         lia.
       * exfalso. (* .out .unfold -.h#* .h#Heqb *)
       (** We also have the scenario where the transfer fails, which we assume not to be the case as part of the successful-calls approach discussed in %\Cref{sec:successful-calls}%. This case is dismissed by the [inversion] tactic and the contradictory knowledge that the %\coq{transferEth}% function returned a zero when it was assumed to return a one in order for the function to succeed.
       The aim of this theorem is to show that in all reachable states, the [balance_backed] property is maintained. It would be a separate proof goal to show that a user can successfully withdraw funds and the proof would be similar to the [can_claim_back] theorem discussed for the crowdfunding smart contract in %\Cref{sec:can-claim-back-crowdfunding}%. *)
       inversion Heqb.
-  
+  (** Next is the case for external balance transfers, which can only increase the balance, so the property continues to hold. *)
     + unfold current_balances, update_balances.
       abbreviated.
       destruct prf. (* .none *)
@@ -1847,7 +1847,7 @@ Proofs
         apply Int256eq_true in Case. (* .none *)
         rewrite <- Case. (* .out .unfold -.h#* .h#IHReachableFromBy .h#H *)
         clear -IHReachableFromBy H. (* .none *)
-        
+        (** Here we see the case where some [amount] of ether has been transferred to the smart contract, increasing its balance, but the property is maintained. *)
         lia.
       * (* .none *) destruct(sender =? recipient)%int256 eqn:SCase; try lia. (* .none *)
   (** Finally, we have the two cases for time passing and for reverting. Neither affect balances or the %\coq{wrapped}% mapping so they follow from the inductive hypothesis. *)
