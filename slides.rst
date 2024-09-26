@@ -1911,9 +1911,3 @@ Paper overviews
 
 .. image:: deepsea-paper.png
   :target: https://dl.acm.org/doi/pdf/10.1145/3360562
-
-----
-
-=================
-Additional Slides
-=================
