@@ -1802,7 +1802,6 @@ Proofs
       rewrite Z.gtb_lt in H6. (* .none *)
       rewrite H2. (* .out .unfold -.h#* .h#IHReachableFromBy .h#H6 *)
       clear -IHReachableFromBy. (* .none *)
-      (** Here we see that in the successful case of minting a wrapped ether token, the inequality increases on both sides by the callvalue. As a result the [balance_backed] property is maintained. *)
       lia.
     + Transparent ERC20WrappedEth_burn_opt.
       abbreviated.
