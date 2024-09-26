@@ -28,7 +28,6 @@ Daniel Britten
 - Property: Transfer Correctness
 - Safety Property: Total Supply Variable Tracks
 - Safety Property: Sufficient Funds Safe
-- Side-note: Unsigned Integer Side-conditions
 - Formal Verification Effort
 
 ----
@@ -293,7 +292,128 @@ Goal:
   End Proof.
   Open Scope nat.
 
-**ERC-20 Wrapped-ETH**
+**ERC-20 Wrapped-ETH Implementation**
+
+.. code:: ocaml
+
+  event
+      | Transfer (_from : address indexed) (_to : address indexed) (_value : int)
+      | Approval (_owner : address indexed) (_spender : address indexed)
+                 (_value : int)
+
+  object signature ERC20WrappedEthSig = {
+      const totalSupply : unit -> int;
+      const balanceOf : address -> int;
+      transfer : address * int -> bool;
+      transferFrom : address * address * int -> bool;
+      const allowance : address * address -> int;
+      approve : address * int -> bool;
+      approveSafely : address * int * int -> bool;
+      mint : unit -> bool;
+      burn : int -> bool
+  }
+
+  object ERC20WrappedEth () : ERC20WrappedEthSig {
+      let wrapped : mapping[address] int := mapping_init
+      let allowances : mapping[address] mapping[address] int := mapping_init
+      let _totalSupply : int := 0
+    
+
+      let totalSupply () =
+        _totalSupply
+      
+      let balanceOf(_owner) = 
+        wrapped[_owner]
+      
+      let transfer(_to, _value) =
+        assert(_value >= 0);
+        assert(msg_sender <> this_address);
+        assert(msg_sender <> _to);
+        assert(msg_value = 0);
+        let wrapped_amount_from = wrapped[msg_sender] in
+        let wrapped_amount_to = wrapped[_to] in
+        assert(wrapped_amount_from >= _value);
+        wrapped[_to] := wrapped_amount_to + _value;
+        wrapped[msg_sender] := wrapped_amount_from - _value;
+        emit Transfer(msg_sender, _to, _value);
+        true
+
+      let transferFrom(_from, _to, _value) =
+        assert(_value >= 0);
+        assert(_from <> this_address);
+        assert(_from <> _to);
+        assert(msg_value = 0);
+        let approved_amount = allowances[_from][msg_sender] in
+        assert(approved_amount >= _value);
+        allowances[_from][msg_sender] := approved_amount - _value;
+        let wrapped_amount_from = wrapped[_from] in
+        let wrapped_amount_to = wrapped[_to] in
+        assert(wrapped_amount_from >= _value);
+        wrapped[_to] := wrapped_amount_to + _value;
+        wrapped[_from] := wrapped_amount_from - _value;
+        emit Transfer(_from, _to, _value);
+        true
+
+      let allowance(_owner, _spender) = 
+        allowances[_owner][_spender]
+      
+      let approve (_spender, _value) = 
+        assert(_value >= 0);
+        allowances[msg_sender][_spender] := _value;
+        emit Approval(msg_sender, _spender, _value);
+        true
+
+      let approveSafely (_spender, _currentValue, _value) = 
+        assert(_value >= 0);
+        let actualCurrentValue = allowances[msg_sender][_spender] in
+        if (_currentValue = actualCurrentValue) then
+          begin
+            allowances[msg_sender][_spender] := _value;
+            emit Approval(msg_sender, _spender, _value);
+            true
+          end
+        else
+          false
+
+      let mint () =
+        assert(msg_sender <> this_address);
+        assert(msg_value > 0);
+
+        let wrapped_amount = wrapped[msg_sender] in
+        wrapped[msg_sender] := wrapped_amount + msg_value;
+        let prev_totalSupply = _totalSupply in
+        _totalSupply := prev_totalSupply + msg_value;
+        emit Transfer(address(0x0), msg_sender, msg_value);
+        true
+      
+      let burn (_value) =
+        assert(_value >= 0);
+        assert(msg_sender <> this_address);
+        assert(msg_value = 0);
+
+        let wrapped_amount = wrapped[msg_sender] in
+        assert(wrapped_amount >= _value);
+        wrapped[msg_sender] := wrapped_amount - _value;
+        let prev_totalSupply = _totalSupply in
+        _totalSupply := prev_totalSupply - _value;
+        transferEth(msg_sender, _value);
+        emit Transfer(msg_sender, address(0x0), _value);
+        true
+  }
+
+  layer CONTRACT : [ { } ]  {erc20wrappedeth : ERC20WrappedEthSig}  = {
+      erc20wrappedeth = ERC20WrappedEth
+  }
+
+----
+
+======
+Proofs
+======
+
+.. image:: whitespace.png
+
+.. image:: whitespace.png
 
 .. coq:: fold
 
@@ -1071,8 +1191,12 @@ Goal:
       Q to_state.
 
   Notation "Q `since` P `as-long-as` R" := (since_as_long P Q R) (at level 1).
-    
-  (** * Preservation of Wrapped Ether Record Theorem *)
+
+----
+
+**Property: Preservation of Wrapped-ETH records**
+
+.. coq:: fold
 
   Definition wrappedAtLeast (a : addr) (amount : Z) (s : BlockchainState) :=
       Int256Tree.get_default 0 a (ERC20WrappedEth_wrapped (contract_state s)) >= amount /\ amount > 0.
@@ -1209,6 +1333,8 @@ Goal:
     + rewrite <- HS. apply IHReachableFromByCorollary1.
   Qed.
 
+.. coq:: none
+
   Opaque ERC20WrappedEth_totalSupply_opt.
   Opaque ERC20WrappedEth_balanceOf_opt.
   Opaque ERC20WrappedEth_transfer_opt.
@@ -1219,7 +1345,11 @@ Goal:
   Opaque ERC20WrappedEth_mint_opt.
   Opaque ERC20WrappedEth_burn_opt.
 
-  (** * Transfer Correctness Theorem *)
+----
+
+**Property: Transfer Correctness**
+
+.. coq:: fold
 
   Theorem transfer_correct :
     forall _to _value _from_balance_before _from_balance_after
@@ -1261,9 +1391,15 @@ Goal:
       reflexivity.
   Qed.
 
+.. coq:: none
+
   Opaque ERC20WrappedEth_transfer_opt.
 
-  (** * Correctness of the Total Supply Variable Theorem *)
+----
+
+**Safety Property: Total Supply Variable Tracks**
+
+..  coq:: fold
 
   Definition Safe P :=
     forall state s l, ReachableFromBy initial_state state s l -> P state.
@@ -1489,20 +1625,7 @@ Goal:
     + rewrite <- HS. unfold total_supply_tracks_correctly. simpl. apply IHReachableFromBy.
   Qed.
 
-  Definition balances_positive state :=
-    (forall key value, get_default 0 key
-                (ERC20WrappedEth_wrapped (contract_state state)) 
-                    = value -> (value >= 0)).
-
-  Theorem balances_always_positive : Safe balances_positive.
-  Proof.
-  unfold Safe.
-  intros.
-  pose proof (total_supply_correct state s l H). (* H0 *)
-  unfold balances_positive, total_supply_tracks_correctly in *.
-  destruct H0 as [H0 H1]. (* H0 H1 *)
-  assumption.
-  Qed.
+.. coq:: none
 
   Opaque ERC20WrappedEth_totalSupply_opt.
   Opaque ERC20WrappedEth_balanceOf_opt.
@@ -1514,7 +1637,11 @@ Goal:
   Opaque ERC20WrappedEth_mint_opt.
   Opaque ERC20WrappedEth_burn_opt.
 
-  (** * Sufficient Funds Safe Theorem *)
+----
+
+**Safety Property: Sufficient Funds Safe**
+
+.. coq:: fold
 
   Definition balance_backed state :=
     sum (ERC20WrappedEth_wrapped (contract_state state))
@@ -1706,9 +1833,20 @@ Goal:
     + rewrite HS in *. apply IHReachableFromBy.  
   Qed.
 
+.. coq:: none
+
   End Blockchain_Model.
 
   End FunctionalCorrectness.
+
+----
+
+Formal Verification Effort
+==========================
+
+.. image:: effort1.png
+
+.. image:: effort2.png
 
 ----
 
