@@ -3,3 +3,4 @@
 .*.aux
 build/
 docs/
+.lia.cache
