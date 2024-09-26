@@ -1190,7 +1190,7 @@ Proofs
 
 **Property: Preservation of Wrapped-ETH records**
 
-.. coq:: fold
+.. coq:: in
 
   Definition since_as_long (P : BlockchainState -> Prop) (Q : BlockchainState -> Prop) (R : Step -> Prop) : Prop :=
     forall (steps : list Step) (from_state to_state : BlockchainState) (to_step : Step),
@@ -1213,6 +1213,147 @@ Proofs
     end.
 
   Theorem wrapped_preserved (a : addr) (amount : Z) :
+                (wrappedAtLeast a amount)
+    `since`      (wrappedAtLeast a amount)
+    `as-long-as` (no_transfer_or_burn_from a).
+  Proof. (* .in *)
+  unfold since_as_long. intros. (* .out .unfold -.h#* .h#H *)
+  induction H.
+  - (* .out .unfold -.h#* .h#H0 *)
+      assumption.
+  - assert(wrappedAtLeast a amount prevSt) as IHReachableFromByCorollary by
+      (apply IHReachableFromBy; intros; apply H1; apply in_cons; assumption).
+    unfold wrappedAtLeast in *;
+      destruct IHReachableFromByCorollary 
+        as [IHReachableFromByCorollary1 IHReachableFromByCorollary2].
+    split; [|assumption].
+    Hlinks.
+    assert(no_transfer_or_burn_from a prev) by
+      (apply H1; destruct HL; subst; right; left; auto).
+    destruct prev; autounfold in *; simpl in *.
+    unfold no_transfer_or_burn_from in H2.
+    destruct Step_action0; simpl in *.
+
+    + Transparent ERC20WrappedEth_totalSupply_opt.
+      unfold ERC20WrappedEth_totalSupply_opt in case_totalSupply_prf.
+      ds_inv; subst; simpl in *. (* .out .unfold -.h#* .h#case_totalSupply_prf *)
+      inversion case_totalSupply_prf. (* .out .unfold -.h#* .h#IHReachableFromByCorollary1 *)
+      exact IHReachableFromByCorollary1.
+    + Transparent ERC20WrappedEth_balanceOf_opt.
+      unfold ERC20WrappedEth_balanceOf_opt in case_balanceOf_prf.
+      ds_inv; subst; simpl in *.
+      inversion case_balanceOf_prf.
+      exact IHReachableFromByCorollary1.
+    + Transparent ERC20WrappedEth_transfer_opt.
+      unfold ERC20WrappedEth_transfer_opt in case_transfer_prf.
+      clear H HL.
+      ds_inv; subst; simpl in *.
+      destruct (a =? _to)%int256 eqn:Case.
+        * apply Int256eq_true in Case. (* .out .unfold -.h#* .h#Case *)
+          subst.
+          apply (f_equal negb) in H12. rewrite negb_involutive in H12.
+          apply Int256eq_false in H12. (* .out .unfold -.h#* .h#H12 *)
+          rewrite get_default_so by auto. (* .out .unfold -.h#* *)
+          apply geb_ge in H4.
+          rewrite get_default_ss. (* .out .unfold -.h#* .h#IHReachableFromByCorollary1 .h#H4 *)
+          clear -IHReachableFromByCorollary1 H4. (* .none *)
+          lia.
+        * apply Int256eq_false in Case. (* .out .unfold -.h#* .h#H2 *)
+          Check get_default_so. (* .in .unfold .no-hyps .no-goals .messages *)
+          rewrite get_default_so by auto. (* .out .unfold -.h#* .h#Case *)
+          rewrite get_default_so by auto.  (* .out .unfold -.h#* .h#IHReachableFromByCorollary1 *)
+          exact IHReachableFromByCorollary1.
+    + Transparent ERC20WrappedEth_transferFrom_opt.
+      unfold ERC20WrappedEth_transferFrom_opt in case_transferFrom_prf.
+      clear H HL.
+      ds_inv; subst; simpl in *.
+      destruct (a =? _to)%int256 eqn:Case.
+      * apply Int256eq_true in Case.
+        subst.
+        apply (f_equal negb) in H12. rewrite negb_involutive in H12.
+        apply Int256eq_false in H12.
+        rewrite get_default_so by auto.
+        apply geb_ge in H4.
+        rewrite get_default_ss.
+        clear -IHReachableFromByCorollary1 H4.
+        lia.
+      * apply Int256eq_false in Case.
+        rewrite get_default_so by auto.
+        rewrite get_default_so by auto.
+        exact IHReachableFromByCorollary1.
+    + Transparent ERC20WrappedEth_allowance_opt.
+      unfold ERC20WrappedEth_allowance_opt in case_allowance_prf.
+      ds_inv; subst; simpl in *.
+      inversion case_allowance_prf.
+      exact IHReachableFromByCorollary1.
+    + Transparent ERC20WrappedEth_approve_opt.
+      unfold ERC20WrappedEth_approve_opt in case_approve_prf.
+      ds_inv; subst; simpl in *.
+      inversion case_approve_prf.
+      clear H HL case_approve_prf.
+      destruct (_value >=? 0); simpl in *; inversion H4.
+      simpl in *.
+      exact IHReachableFromByCorollary1.
+    + Transparent ERC20WrappedEth_approveSafely_opt.
+      unfold ERC20WrappedEth_approveSafely_opt in case_approveSafely_prf.
+      ds_inv; subst; simpl in *.
+      inversion case_approveSafely_prf. (* .out .unfold -.h#* *)
+      clear H HL case_approveSafely_prf.
+      destruct (_value >=? 0); simpl in *; inversion H4.
+      destruct (_currentValue =?
+                  get_default 0 _spender
+                    (get_default (empty Z) (caller context)
+                      (ERC20WrappedEth_allowances (contract_state Step_state0))));
+        inversion H3; simpl in *; exact IHReachableFromByCorollary1.
+    + Transparent ERC20WrappedEth_mint_opt.
+      unfold ERC20WrappedEth_mint_opt in case_mint_prf.
+      clear H HL. simpl in *.
+      ds_inv; subst; simpl in *.
+      destruct(caller context =? contract_address)%int256; simpl in *;
+      ds_inv; subst; simpl in *; try discriminate.
+      destruct(callvalue context >? 0)%int256; simpl in *; simpl in *;
+      ds_inv; subst; simpl in *; try discriminate.
+      inversion case_mint_prf; simpl in *.
+      destruct (a =? (caller context))%int256 eqn:Case.
+      * apply Int256eq_true in Case. (* .out .unfold -.h#* .h#Case *)
+        rewrite <- Case in *.
+        rewrite get_default_ss. (* .out .unfold -.h#* .h#IHReachableFromByCorollary1 .h#callvalue_bounded_prf *)
+        clear -IHReachableFromByCorollary1 callvalue_bounded_prf. (* .none *)
+        lia.
+      * apply Int256eq_false in Case. (* .out .unfold -.h#* .h#Case *)
+        rewrite get_default_so by apply Case. (* .out .unfold -.h#* .h#IHReachableFromByCorollary1 *)
+        exact IHReachableFromByCorollary1.
+    + Transparent ERC20WrappedEth_burn_opt.
+      unfold ERC20WrappedEth_burn_opt in case_burn_prf.
+      clear H HL.
+      ds_inv; subst.
+      * simpl in *. (* .out .unfold -.h#* .h#H2 *)
+        rewrite get_default_so by auto. (* .out .unfold -.h#* *)
+        exact IHReachableFromByCorollary1.
+      * exfalso. simpl in *. apply Int256eq_true in Heqb. (* .out .unfold -.h#* .h#Heqb *)
+        inversion Heqb.
+    + rewrite <- HS. apply IHReachableFromByCorollary1.
+    + rewrite <- HS. apply IHReachableFromByCorollary1.
+    + rewrite <- HS. apply IHReachableFromByCorollary1.
+  Qed.
+
+.. coq:: none
+  
+  Opaque ERC20WrappedEth_totalSupply_opt.
+  Opaque ERC20WrappedEth_balanceOf_opt.
+  Opaque ERC20WrappedEth_transfer_opt.
+  Opaque ERC20WrappedEth_transferFrom_opt.
+  Opaque ERC20WrappedEth_approve_opt.
+  Opaque ERC20WrappedEth_approveSafely_opt.
+  Opaque ERC20WrappedEth_allowance_opt.
+  Opaque ERC20WrappedEth_mint_opt.
+  Opaque ERC20WrappedEth_burn_opt.
+
+**Full proof**
+
+.. coq:: fold
+
+  Theorem wrapped_preserved' (a : addr) (amount : Z) :
                 (wrappedAtLeast a amount)
     `since`      (wrappedAtLeast a amount)
     `as-long-as` (no_transfer_or_burn_from a).
