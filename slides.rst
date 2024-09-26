@@ -1185,6 +1185,13 @@ Proofs
       | [ H : (_ /\ _) |- _ ] => destruct H
     end.
 
+
+----
+
+**Property: Preservation of Wrapped-ETH records**
+
+.. coq:: fold
+
   Definition since_as_long (P : BlockchainState -> Prop) (Q : BlockchainState -> Prop) (R : Step -> Prop) : Prop :=
     forall (steps : list Step) (from_state to_state : BlockchainState) (to_step : Step),
       ReachableFromBy from_state to_state to_step steps ->
@@ -1193,13 +1200,7 @@ Proofs
       Q to_state.
 
   Notation "Q `since` P `as-long-as` R" := (since_as_long P Q R) (at level 1).
-
-----
-
-**Property: Preservation of Wrapped-ETH records**
-
-.. coq:: fold
-
+  
   Definition wrappedAtLeast (a : addr) (amount : Z) (s : BlockchainState) :=
       Int256Tree.get_default 0 a (ERC20WrappedEth_wrapped (contract_state s)) >= amount /\ amount > 0.
 
@@ -1659,7 +1660,7 @@ Proofs
   rewrite H0. (* .none *)
   clear H0 H1. (* .none *)
   induction H.
-  - simpl. (* .out -.h#* .h#snapshot_balances_valid_prf *)
+  - simpl. (* .out .unfold -.h#* .h#snapshot_balances_valid_prf *)
     (** In the base case, we rely upon the assumption made that the snapshot balances are in a valid range as a part of a snapshot approach described in %\Cref{sec:snapshot}%. *)
     apply snapshot_balances_valid_prf.
   - abbreviated.
@@ -1800,7 +1801,7 @@ Proofs
       rewrite H2. (* .none *)
       rewrite Int256.eq_sym in H2. (* .none *)
       rewrite Z.gtb_lt in H6. (* .none *)
-      rewrite H2. (* .out -.h#* .h#IHReachableFromBy .h#H6 *)
+      rewrite H2. (* .out .unfold -.h#* .h#IHReachableFromBy .h#H6 *)
       clear -IHReachableFromBy. (* .none *)
       (** Here we see that in the successful case of minting a wrapped ether token, the inequality increases on both sides by the callvalue. As a result the [balance_backed] property is maintained. *)
       lia.
@@ -1823,11 +1824,11 @@ Proofs
         rewrite Z.eqb_eq in H10. (* .none *) rewrite H10. (* .none *)
         rewrite Z.add_0_r, Z.sub_0_r. (* .none *)
         rewrite Z.geb_le in H16. (* .none *)
-        rewrite H6. (* .out -.h#* .h#IHReachableFromBy .h#H2 *)
+        rewrite H6. (* .out .unfold -.h#* .h#IHReachableFromBy .h#H2 *)
         clear -IHReachableFromBy H2. (* .none *)
         (** For the %\coq{burn}% case, this time the inequality is reduced on the left and right by the argument %\coq{_value}% and so the property is maintained. *)
         lia.
-      * exfalso. (* .out -.h#* .h#Heqb *)
+      * exfalso. (* .out .unfold -.h#* .h#Heqb *)
       (** We also have the scenario where the transfer fails, which we assume not to be the case as part of the successful-calls approach discussed in %\Cref{sec:successful-calls}%. This case is dismissed by the [inversion] tactic and the contradictory knowledge that the %\coq{transferEth}% function returned a zero when it was assumed to return a one in order for the function to succeed.
       The aim of this theorem is to show that in all reachable states, the [balance_backed] property is maintained. It would be a separate proof goal to show that a user can successfully withdraw funds and the proof would be similar to the [can_claim_back] theorem discussed for the crowdfunding smart contract in %\Cref{sec:can-claim-back-crowdfunding}%. *)
       inversion Heqb.
@@ -1844,7 +1845,7 @@ Proofs
       * (* .none *) destruct(sender =? recipient)%int256 eqn:SCase; try lia. (* .none *)
         destruct a. (* .none *)
         apply Int256eq_true in Case. (* .none *)
-        rewrite <- Case. (* .out -.h#* .h#IHReachableFromBy .h#H *)
+        rewrite <- Case. (* .out .unfold -.h#* .h#IHReachableFromBy .h#H *)
         clear -IHReachableFromBy H. (* .none *)
         (** Here we see the case where some [amount] of ether has been transferred to the smart contract, increasing its balance, but the property is maintained. *)
         lia.
