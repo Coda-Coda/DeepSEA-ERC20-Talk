@@ -91,6 +91,22 @@
           discriminate.
   Qed.
 
+  Lemma boolToInt_proof' : forall input context before result after HContext1 HContext2 HContext3,
+    let machine_environment :=
+      (make_machine_env contract_address before context (fun _ _ _ _ => true) HContext1 HContext2 HContext3) in
+
+    runStateT (Trivial_boolToInt_opt input machine_environment) (contract_state before)
+      = Some (result, after)
+    
+    ->
+    
+    result = 1 <-> input = true.
+  Proof.
+    intros.
+    Transparent Trivial_boolToInt_opt. unfold Trivial_boolToInt_opt in H.
+    split; inv_runStateT_branching; try subst; try discriminate; try reflexivity.
+  Qed.
+
   Lemma boolToIntTracker_proof : forall input context before result after HContext1 HContext2 HContext3,
   let machine_environment :=
   (make_machine_env contract_address before context (fun _ _ _ _ => true) HContext1 HContext2 HContext3) in
