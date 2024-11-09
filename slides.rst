@@ -2224,12 +2224,14 @@ Formal Verification Effort
     - DeepSEA_
     - My DeepSEA fork_ 
     - The Crowdfunding_ contract
+    - Source code for these slides_
 
 .. _Alectryon: https://github.com/cpitclaudel/alectryon
 .. _CompCert: https://compcert.org/
 .. _DeepSEA: https://github.com/ShentuChain/deepsea
 .. _fork: https://github.com/Coda-Coda/deepsea-1
 .. _Crowdfunding: https://github.com/Coda-Coda/Crowdfunding/
+.. _slides: https://github.com/Coda-Coda/DeepSEA-ERC20-Talk
 
 ----
 
