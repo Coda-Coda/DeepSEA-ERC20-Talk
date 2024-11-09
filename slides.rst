@@ -15,8 +15,8 @@
 ERC-20 Wrapped-ETH Verification in DeepSEA
 ==========================================
 
-Daniel Britten
-==============
+Dr. Daniel Britten
+==================
 
 ----
 
