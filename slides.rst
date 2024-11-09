@@ -5,7 +5,7 @@
 :js-body: alectryon.js
 :slide-numbers: true
 :data-transition-duration: 0
-:alectryon/serapi/args: -R /run/media/daniel/WORK/DeepSEA-ERC20-Talk/PhD-Thesis-Code-Artefact/DeepSEA DeepSpec -R /run/media/daniel/WORK/DeepSEA-ERC20-Talk/PhD-Thesis-Code-Artefact/Chapter-5-Case-Study-Crowdfunding/Crowdfunding Crowdfunding -R /run/media/daniel/WORK/DeepSEA-ERC20-Talk/PhD-Thesis-Code-Artefact/Chapter-6-Case-Study-ERC-20-Wrapped-Ether-Token/ERC20WrappedEth ERC20WrappedEth -R /run/media/daniel/WORK/DeepSEA-ERC20-Talk/PhD-Thesis-Code-Artefact/Trivial/trivial trivial -R /run/media/daniel/WORK/DeepSEA-ERC20-Talk/PhD-Thesis-Code-Artefact/Chapter-5-Case-Study-Crowdfunding/proofs SmartContract
+:alectryon/serapi/args: -R /home/daniel/Code/Talk-ERC20-DeepSEA-Alectryon/PhD-Thesis-Code-Artefact/DeepSEA DeepSpec -R /home/daniel/Code/Talk-ERC20-DeepSEA-Alectryon/PhD-Thesis-Code-Artefact/Chapter-5-Case-Study-Crowdfunding/Crowdfunding Crowdfunding -R /home/daniel/Code/Talk-ERC20-DeepSEA-Alectryon/PhD-Thesis-Code-Artefact/Chapter-6-Case-Study-ERC-20-Wrapped-Ether-Token/ERC20WrappedEth ERC20WrappedEth -R /home/daniel/Code/Talk-ERC20-DeepSEA-Alectryon/PhD-Thesis-Code-Artefact/Trivial/trivial trivial -R /home/daniel/Code/Talk-ERC20-DeepSEA-Alectryon/PhD-Thesis-Code-Artefact/Chapter-5-Case-Study-Crowdfunding/proofs SmartContract
 
 .. :auto-console: true
 
